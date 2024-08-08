@@ -3,21 +3,26 @@ package br.lukelaw.mvp_luke_law.service;
 
 
 
+import br.lukelaw.mvp_luke_law.email.Email;
+import br.lukelaw.mvp_luke_law.email.EmailService;
+import br.lukelaw.mvp_luke_law.entity.Movimento;
 import br.lukelaw.mvp_luke_law.entity.Processo;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 
 @Service
 public class ProcessoService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProcessoService.class);
     private String apiUrl = "https://api-publica.datajud.cnj.jus.br/api_publica_tjrj/_search";
     private String apiKey = "APIKey cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==";
 
@@ -32,7 +37,7 @@ public class ProcessoService {
         return "{\"query\": {\"match\": {\"numeroProcesso\": \"" + numeroProcesso + "\"}}}";
     }
 
-    public ResponseEntity<String> realizarRequisicao(String numeroProcesso) {
+    public Processo realizarRequisicao(String numeroProcesso) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", apiKey);
@@ -40,17 +45,47 @@ public class ProcessoService {
         HttpEntity<String> request = new HttpEntity<>(getBody(numeroProcesso), headers);
         ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, request, String.class);
 
-        processarJson(response.getBody());
-
-        return response;
-    }
-
-    public void processarJson(String json) {
+        // Usando o ObjectMapper configurado para desserializar a resposta JSON para um objeto Processo
+        Processo processo = null;
         try {
-            Processo processo = objectMapper.readValue(json, Processo.class);
-            System.out.println(processo);
-        } catch (JsonProcessingException e) {
+            processo = objectMapper.readValue(response.getBody(), Processo.class);
+
+        } catch (IOException e) {
             e.printStackTrace();
+            // Trate a exceção conforme necessário
         }
+        return processo;
     }
+
+    public boolean analisarMovimentacao(Processo processo) {
+
+        // Obter o último movimento
+        Movimento ultimoMovimento = processo.getMovimentos().get(processo.getMovimentos().size() - 1);
+
+        // Converter a data do último movimento para LocalDateTime
+        LocalDateTime dataUltimoMovimento = ultimoMovimento.dataHora();
+
+        // Obter a data e hora atual
+        LocalDateTime agora = LocalDateTime.now();
+
+        // Calcular a diferença em horas
+        long horasDesdeUltimoMovimento = ChronoUnit.HOURS.between(dataUltimoMovimento, agora);
+
+        System.out.println(horasDesdeUltimoMovimento);
+
+        // Verificar se a diferença é menor que 24 horas  |||| Para conseguir testar vou aumentar em 1600 horas
+        return horasDesdeUltimoMovimento < 1600;
+    }
+
+
+
+
+
 }
+
+
+
+
+
+
+

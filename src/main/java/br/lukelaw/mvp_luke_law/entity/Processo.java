@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @ToString
-@JsonDeserialize(using = ProcessoDeserializer.class)
 public class Processo {
     private Long id;
     private String tribunal;
@@ -21,10 +20,10 @@ public class Processo {
     private LocalDateTime dataAjuizamento;
     private String grau;
     private String nivelSigilo;
-    //private List<Movimento> movimentos;
+    private List<Movimento> movimentos;
     private LocalDateTime dataHoraUltimaAtualizacao;
-    //@JsonProperty("@timestamp")
-    //private LocalDateTime timestamp;
+    @JsonProperty("@timestamp")
+    private LocalDateTime timestamp;
 
 }
 

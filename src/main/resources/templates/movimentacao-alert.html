@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div style="font-family: Arial, sans-serif; margin: 20px;">
+    <h1 style="color: #333; text-align: center;">Prezado(a) cliente,</h1>
+    <p>Houve uma nova movimentação no seu processo <span th:text="${processo.numeroProcesso}"></span> no tribunal <span th:text="${processo.tribunal}"></span>.</p>
+    <h2 style="color: #666;">Detalhes da última movimentação:</h2>
+    <ul style="list-style: none; padding: 0;">
+        <li style="margin-bottom: 5px;">Data e hora: <span th:text="${movimento.dataHora}"></span></li>
+        <li>Descrição: <span th:text="${movimento.nome}"></span></li>
+    </ul>
+</div>
+</body>
+</html>
