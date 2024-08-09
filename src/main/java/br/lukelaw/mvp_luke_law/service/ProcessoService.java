@@ -1,10 +1,6 @@
 package br.lukelaw.mvp_luke_law.service;
 
-
-
-
-import br.lukelaw.mvp_luke_law.email.Email;
-import br.lukelaw.mvp_luke_law.email.EmailService;
+import br.lukelaw.mvp_luke_law.dto.AnaliseDeMovimento;
 import br.lukelaw.mvp_luke_law.entity.Movimento;
 import br.lukelaw.mvp_luke_law.entity.Processo;
 
@@ -26,7 +22,7 @@ public class ProcessoService {
     private String apiUrl = "https://api-publica.datajud.cnj.jus.br/api_publica_tjrj/_search";
     private String apiKey = "APIKey cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==";
 
-    @Autowired
+   @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
@@ -57,7 +53,7 @@ public class ProcessoService {
         return processo;
     }
 
-    public boolean analisarMovimentacao(Processo processo) {
+    public AnaliseDeMovimento analisarMovimentacao(Processo processo) {
 
         // Obter o último movimento
         Movimento ultimoMovimento = processo.getMovimentos().get(processo.getMovimentos().size() - 1);
@@ -71,10 +67,12 @@ public class ProcessoService {
         // Calcular a diferença em horas
         long horasDesdeUltimoMovimento = ChronoUnit.HOURS.between(dataUltimoMovimento, agora);
 
-        System.out.println(horasDesdeUltimoMovimento);
-
         // Verificar se a diferença é menor que 24 horas  |||| Para conseguir testar vou aumentar em 1600 horas
-        return horasDesdeUltimoMovimento < 1600;
+        boolean movimentoRecente = horasDesdeUltimoMovimento < 1600;
+
+
+        return new AnaliseDeMovimento(processo.getNumeroProcesso(),processo.getTribunal(),
+                ultimoMovimento, horasDesdeUltimoMovimento,movimentoRecente);
     }
 
 

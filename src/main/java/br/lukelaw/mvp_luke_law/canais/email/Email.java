@@ -1,4 +1,4 @@
-package br.lukelaw.mvp_luke_law.email;
+package br.lukelaw.mvp_luke_law.canais.email;
 
 public record Email(
         String to,

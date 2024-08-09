@@ -1,4 +1,4 @@
-package br.lukelaw.mvp_luke_law.email;
+package br.lukelaw.mvp_luke_law.canais.email;
 
 
 
@@ -40,18 +40,22 @@ public class EmailService {
     }
 
 
-    public void sendEmail(Email email) {
+    public boolean sendEmail(Email email) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            helper.setFrom("noreply@email.com");
+            helper.setFrom("luke@legislator.com");
             helper.setTo(email.to());
             helper.setSubject(email.subject());
             helper.setText(email.body(), true); // true indica que é HTML
 
             mailSender.send(mimeMessage);
+
+            return true;
+
         } catch (MessagingException e) {
             e.printStackTrace();
+            return false;
 
         }
     }
