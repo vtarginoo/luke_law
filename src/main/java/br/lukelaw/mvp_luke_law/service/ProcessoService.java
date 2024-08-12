@@ -4,14 +4,15 @@ import br.lukelaw.mvp_luke_law.dto.AnaliseDeMovimento;
 import br.lukelaw.mvp_luke_law.entity.Movimento;
 import br.lukelaw.mvp_luke_law.entity.Processo;
 
+import br.lukelaw.mvp_luke_law.exception.ProcessoNaoEncontradoException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -33,25 +34,23 @@ public class ProcessoService {
         return "{\"query\": {\"match\": {\"numeroProcesso\": \"" + numeroProcesso + "\"}}}";
     }
 
-    public Processo realizarRequisicao(String numeroProcesso) {
+    public Processo reqDataJud(String numeroProcesso) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", apiKey);
 
         HttpEntity<String> request = new HttpEntity<>(getBody(numeroProcesso), headers);
-        ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, request, String.class);
 
-        // Usando o ObjectMapper configurado para desserializar a resposta JSON para um objeto Processo
-        Processo processo = null;
-        try {
-            processo = objectMapper.readValue(response.getBody(), Processo.class);
+            ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, request, String.class);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Trate a exceção conforme necessário
-        }
-        return processo;
+            // Desserializar a resposta e validar os dados
+            Processo processo = objectMapper.readValue(response.getBody(), Processo.class);
+            // Adicionar validações específicas para o objeto Processo, por exemplo
+            return processo;
+
     }
+
+
 
     public AnaliseDeMovimento analisarMovimentacao(Processo processo) {
 

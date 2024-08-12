@@ -2,6 +2,7 @@ package br.lukelaw.mvp_luke_law.deserializer;
 
 import br.lukelaw.mvp_luke_law.entity.Movimento;
 import br.lukelaw.mvp_luke_law.entity.Processo;
+import br.lukelaw.mvp_luke_law.exception.ProcessoNaoEncontradoException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -27,7 +28,7 @@ public class ProcessoDeserializer extends JsonDeserializer<Processo> {
         if (hitsArrayNode.isArray() && hitsArrayNode.size() > 0) {
             JsonNode sourceNode = hitsArrayNode.get(0).path("_source");
             if (sourceNode.isMissingNode()) {
-                throw new IOException("O nó '_source' está ausente no JSON.");
+                throw new ProcessoNaoEncontradoException("O nó '_source' está ausente no JSON.");
             }
 
 
@@ -66,6 +67,6 @@ public class ProcessoDeserializer extends JsonDeserializer<Processo> {
                     grau, nivelSigilo,movimentos, dataHoraUltimaAtualizacaoLocal,  timestampLocal);
 
         } else {
-            throw new IOException("O nó 'hits' não contém elementos ou está vazio.");
+            throw new ProcessoNaoEncontradoException("O nó 'hits' não contém elementos ou está vazio.");
         }
     }}

@@ -4,6 +4,7 @@ import br.lukelaw.mvp_luke_law.canais.email.Email;
 import br.lukelaw.mvp_luke_law.canais.email.EmailService;
 import br.lukelaw.mvp_luke_law.canais.whatsapp.WhatsappService;
 import br.lukelaw.mvp_luke_law.service.ProcessoService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,8 +24,8 @@ public class ProcessoTask {
     @Autowired
     WhatsappService wppService;
 
-    @Scheduled(initialDelay = 120000 ) // 5 minutos em milissegundos
-public void monitoramentoMovimentoDeProcessoEmail () {
+    //@Scheduled(initialDelay = 120000 ) // 5 minutos em milissegundos
+public void monitoramentoMovimentoDeProcessoEmail () throws JsonProcessingException {
 
     var user = "vtarginoo@gmail.com";
     //var user = "sefyunes@gmail.com";
@@ -33,7 +34,7 @@ public void monitoramentoMovimentoDeProcessoEmail () {
 
     for (String processo: processos) {
 
-        var processoMonitorado = processoService.realizarRequisicao(processo);
+        var processoMonitorado = processoService.reqDataJud(processo);
         var analiseDeMovimento = processoService.analisarMovimentacao(processoMonitorado);
 
         var hora = analiseDeMovimento.getUltimoMovimento().dataHora();
@@ -50,15 +51,15 @@ public void monitoramentoMovimentoDeProcessoEmail () {
     }
    }
 
-    @Scheduled(initialDelay = 120000 ) // 5 minutos em milissegundos
-    public void monitoramentoMovimentoDeProcessoWpp () {
+    //@Scheduled(initialDelay = 120000 ) // 5 minutos em milissegundos
+    public void monitoramentoMovimentoDeProcessoWpp () throws JsonProcessingException {
 
 
         String[] processos = {"09077874720238190001", "09476172020238190001", "01016022920238190000"};
 
         for (String processo: processos) {
 
-            var processoMonitorado = processoService.realizarRequisicao(processo);
+            var processoMonitorado = processoService.reqDataJud(processo);
             var analiseDeMovimento = processoService.analisarMovimentacao(processoMonitorado);
 
             String messageBody = "Prezado Cliente, segue as informações sobre a movimentação do processo "
