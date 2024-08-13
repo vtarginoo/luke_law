@@ -54,15 +54,15 @@ public void monitoramentoMovimentoDeProcessoEmail () throws JsonProcessingExcept
     //@Scheduled(initialDelay = 120000 ) // 5 minutos em milissegundos
     public void monitoramentoMovimentoDeProcessoWpp () throws JsonProcessingException {
 
-
-        String[] processos = {"09077874720238190001", "09476172020238190001", "01016022920238190000"};
+        String[] processos = {"09077874720238190001", "09476172020238190001", "01016022920238190000",
+                "08091295120248190001"};
 
         for (String processo: processos) {
 
             var processoMonitorado = processoService.reqDataJud(processo);
             var analiseDeMovimento = processoService.analisarMovimentacao(processoMonitorado);
 
-            String messageBody = "Prezado Cliente, segue as informações sobre a movimentação do processo "
+            String messageBody = "Aqui é o Luke! teve movimentação no seu processo da uma olhada ai! "
                     + processoMonitorado.getNumeroProcesso() +
                     "\nData e hora da movimentação: " + analiseDeMovimento.getUltimoMovimento().dataHora() +
                     "Tipo de Movimentação " +  analiseDeMovimento.getUltimoMovimento().nome();

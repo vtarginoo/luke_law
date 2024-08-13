@@ -45,6 +45,23 @@ public class ProcessoController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/consultaAnalise")
+    public ResponseEntity<NotificacaoEmailResponse> rotaAnalisePassiva
+            (@Valid @NotNull @RequestBody NotificacaoEmailRequest emailRequest) throws JsonProcessingException {
+
+        var requestProcesso = processoService.reqDataJud(emailRequest.numProcesso());
+        var analiseProcesso = processoService.analisarMovimentacao(requestProcesso);
+
+        if (analiseProcesso.isMovimentoRecente()){
+
+            return  ResponseEntity.ok(new  NotificacaoEmailResponse(analiseProcesso, true));
+        }
+
+        return  ResponseEntity.ok(new  NotificacaoEmailResponse(analiseProcesso, false));
+
+    }
+
+
     @PostMapping("/email")
     public ResponseEntity<NotificacaoEmailResponse> notificacaoEmailProcesso
             (@Valid @NotNull @RequestBody NotificacaoEmailRequest emailRequest) throws JsonProcessingException {

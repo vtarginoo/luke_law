@@ -19,7 +19,7 @@ public class WhatsappService {
 
     public void notificacaoWhatsapp (String bodyMessage){
 
-       // Twilio.init(accountSid, authToken);
+        Twilio.init(accountSid, authToken);
        // Message message = Message.creator(
        //         new com.twilio.type.PhoneNumber("whatsapp:+5521978658787"), //
        //         new com.twilio.type.PhoneNumber(twilioPhoneNumber),bodyMessage) .create();
