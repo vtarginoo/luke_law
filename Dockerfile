@@ -18,6 +18,22 @@ RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
+# Argumentos para as variáveis de ambiente
+ARG SPRING_APPLICATION_NAME=mvp-luke-law
+ARG SENDGRID_API_KEY
+ARG TWILIO_ACCOUNT_SID
+ARG TWILIO_AUTH_TOKEN
+ARG TWILIO_WHATSAPP_FROM
+
+# Definindo as variáveis de ambiente
+# Definindo as variáveis de ambiente
+ENV SPRING_APPLICATION_NAME=${SPRING_APPLICATION_NAME}
+ENV SENDGRID_API_KEY=${SENDGRID_API_KEY}
+ENV TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+ENV TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+ENV TWILIO_WHATSAPP_FROM=${TWILIO_WHATSAPP_FROM}
+
+
 # Copia o JAR do estágio de build
 COPY --from=build /app/target/indicadores-disponibilidade-pje-0.0.1-SNAPSHOT.jar app.jar
 

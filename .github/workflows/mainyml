@@ -16,3 +16,17 @@ jobs:
         with:
           username: vtarginoo
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build and Push Image
+        run: |
+          docker buildx build \
+            --push \
+            --platform linux/amd64 \
+            --build-arg SPRING_APPLICATION_NAME=mvp-luke-law \
+            --build-arg SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }} \
+            --build-arg TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }} \
+            --build-arg TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }} \
+            --build-arg TWILIO_WHATSAPP_FROM=${{ secrets.TWILIO_WHATSAPP_FROM }} \
+            -f Dockerfile  # Specify the path to your Dockerfile if it's not in the root
+            -t vtarginoo/lukelawapi:latest \
+            .
+
