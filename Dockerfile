@@ -35,7 +35,7 @@ ENV TWILIO_WHATSAPP_FROM=${TWILIO_WHATSAPP_FROM}
 
 
 # Copia o JAR do estágio de build
-COPY --from=build /app/target/indicadores-disponibilidade-pje-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/mvp-luke-law-0.0.1-SNAPSHOT.jar app.jar
 
 # Porta da aplicação
 EXPOSE 8080
