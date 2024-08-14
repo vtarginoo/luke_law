@@ -18,7 +18,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Build and Push Image
         run: |
-          docker buildx build \
+          docker buildx build . \
             --push \
             --platform linux/amd64 \
             --build-arg SPRING_APPLICATION_NAME=mvp-luke-law \
@@ -28,6 +28,5 @@ jobs:
             --build-arg TWILIO_WHATSAPP_FROM=${{ secrets.TWILIO_WHATSAPP_FROM }} \
             -f Dockerfile  # Specify the path to your Dockerfile if it's not in the root
             -t vtarginoo/lukelawapi:latest \
-            .
 
 
