@@ -1,73 +1,48 @@
 package br.lukelaw.mvp_luke_law.webscraping.service;
 
 import br.lukelaw.mvp_luke_law.webscraping.config.WebDriverFactory;
+import br.lukelaw.mvp_luke_law.webscraping.entity.Movimento;
+import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
+import br.lukelaw.mvp_luke_law.webscraping.utils.WebScrapingUtil;
 import org.openqa.selenium.*;
 
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class WebScrapingService {
 
-    public String scrapePjeConsultaPublica(String numeroProcesso) {
+    @Autowired
+    MovimentoService movimentoService;
+
+    @Autowired
+    WebScrapingUtil webScrapingUtil;
+
+    public Processo scrapePjeUltimoMov(String numProcesso) {
         WebDriver driver = WebDriverFactory.createChromeDriver();
-        String ultimaMovimentacao = "";
+        String pjeUrl = "https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam";
+
+        Processo processoCapturado = null;
+        Movimento ultimoMovimento = null;
+        List<Movimento> movimentos = new ArrayList<>();
 
         try {
-            // Acessa a página do PJE Consulta Pública do TJ-RJ
-            driver.get("https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam");
 
-            // Adiciona o cookie rxvisitor manualmente
-            Cookie rxVisitorCookie = new Cookie("rxvisitor", "1722960632647NRQOMJVLQSK7UM5RBBNRF8S5QGFHD1R7");
-            driver.manage().addCookie(rxVisitorCookie);
+            //última movimentação como string
+            String movimentoScrape = webScrapingUtil.ScrapingUltimaMov(driver, pjeUrl, numProcesso);
+            // Transforma a string capturada em um objeto Movimento
+            ultimoMovimento = movimentoService.criarMovimento(movimentoScrape);
+            // Insere o último movimento na lista
+            movimentos.add(ultimoMovimento);
 
-            // Adiciona o valor no local storage
-            JavascriptExecutor js = (JavascriptExecutor) driver;
-            js.executeScript("window.localStorage.setItem('rxvisitor', '1722960632647NRQOMJVLQSK7UM5RBBNRF8S5QGFHD1R7');");
+            // Transforma movimento em um processo
+            processoCapturado = new Processo(numProcesso, "TJRJ", "Pje", "1ªInstancia",
+                    movimentos, ultimoMovimento.dataHora());
 
-            // Recarrega a página para que o cookie seja aplicado
-            driver.navigate().refresh();
-
-            // Identifica o campo de pesquisa e insere o número do processo
-            WebElement searchField = driver.findElement(By.id("fPP:numProcesso-inputNumeroProcessoDecoration:numProcesso-inputNumeroProcesso"));
-            searchField.sendKeys(numeroProcesso);
-
-            // Simula o pressionamento da tecla Enter para submeter a busca
-            searchField.sendKeys(Keys.ENTER);
-
-            // Espera um pouco para a página de login carregar, se for o caso
-            Thread.sleep(2000);
-
-            // Verifica se a página de login foi carregada
-            if (driver.getCurrentUrl().contains("login")) {
-                System.out.println("Redirecionado para a página de login, voltando...");
-
-                // Volta para a página anterior
-                driver.navigate().back();
-
-                // Reenvia a pesquisa
-                searchField = driver.findElement(By.id("fPP:numProcesso-inputNumeroProcessoDecoration:numProcesso-inputNumeroProcesso"));
-                searchField.sendKeys(numeroProcesso);
-                searchField.sendKeys(Keys.ENTER);
-
-                // Aguarda um tempo para a página carregar novamente
-                Thread.sleep(2000);
-            }
-
-            // Espera explícita para garantir que o elemento esteja presente antes de acessá-lo
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            WebElement movimentacaoElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("//tbody[@id='fPP:processosTable:tb']/tr[1]/td[3]")));
-
-            // Captura a última movimentação
-            ultimaMovimentacao = movimentacaoElement.getText();
-            System.out.println("Última Movimentação: " + ultimaMovimentacao);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,7 +50,7 @@ public class WebScrapingService {
             driver.quit();
         }
 
-        return ultimaMovimentacao;
+        return processoCapturado;
     }
 }
 

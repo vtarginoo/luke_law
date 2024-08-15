@@ -6,7 +6,7 @@ COPY .mvn .mvn
 COPY pom.xml .
 
 RUN chmod +x ./mvnw
-# Faça o download das dependencias do pom.xml
+# Faça o download das dependências do pom.xml
 RUN ./mvnw dependency:go-offline -B
 
 COPY src src
@@ -26,13 +26,31 @@ ARG TWILIO_AUTH_TOKEN
 ARG TWILIO_WHATSAPP_FROM
 
 # Definindo as variáveis de ambiente
-# Definindo as variáveis de ambiente
 ENV SPRING_APPLICATION_NAME=${SPRING_APPLICATION_NAME}
 ENV SENDGRID_API_KEY=${SENDGRID_API_KEY}
 ENV TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
 ENV TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
 ENV TWILIO_WHATSAPP_FROM=${TWILIO_WHATSAPP_FROM}
 
+# Definir variável de ambiente para indicar que está rodando em Docker
+ENV DOCKER_ENV=true
+
+# Instalar dependências necessárias para o Chrome e o ChromeDriver
+RUN apk add --no-cache \
+    udev \
+    ttf-freefont \
+    chromium \
+    chromium-chromedriver \
+    nss \
+    && apk add --no-cache \
+    harfbuzz \
+    ca-certificates \
+    bash \
+    && rm -rf /var/cache/apk/*
+
+# Definir variáveis de ambiente para Chrome e ChromeDriver
+ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CHROME_PATH=/usr/lib/chromium/
 
 # Copia o JAR do estágio de build
 COPY --from=build /app/target/mvp-luke-law-0.0.1-SNAPSHOT.jar app.jar
