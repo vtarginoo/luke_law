@@ -7,6 +7,7 @@ import br.lukelaw.mvp_luke_law.webscraping.service.MovimentoService;
 import br.lukelaw.mvp_luke_law.webscraping.service.WebScrapingService;
 import br.lukelaw.mvp_luke_law.webscraping.service.WhatsappService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/pje")
+@Tag(name = "PjeController", description = "Endpoints para consulta e análise de processos via PJE")
 public class PjeController {
 
     @Autowired

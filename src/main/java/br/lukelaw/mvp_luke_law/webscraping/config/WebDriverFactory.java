@@ -37,7 +37,7 @@ public class WebDriverFactory {
 
         if (isRunningInDocker) {
             // Em um ambiente Docker, o ChromeDriver estará no PATH, então não é necessário definir o caminho
-            // Adicione outras configurações específicas do Docker, se necessário
+            options.setBinary("/usr/bin/chromium-browser");
             System.out.println("Executando em um ambiente Docker.");
         } else {
             // Ambiente local
