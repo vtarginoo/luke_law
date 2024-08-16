@@ -21,8 +21,8 @@ public class ProcessoTask {
     @Scheduled(cron ="0 0 8-12 * * ?" ) // 5 minutos em milissegundos
     public void monitoramentoMovimentoDeProcessoWpp () throws JsonProcessingException {
 
-        String[] processos = {"09077874720238190001", "09476172020238190001", "01016022920238190000",
-                "08091295120248190001"};
+        String[] processos = {"08387170620248190001", "08091295120248190001", "09476172020238190001",
+                "09381606120238190001"};
 
         for (String processo: processos) {
 
