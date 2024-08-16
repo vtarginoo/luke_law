@@ -62,7 +62,7 @@ public class MovimentoService {
         long horasDesdeUltimoMovimento = ChronoUnit.HOURS.between(dataUltimoMovimento, agora);
 
         // Verificar se a diferença é menor que 24 horas  |||| Para conseguir testar vou aumentar em 1600 horas
-        boolean movimentoRecente = horasDesdeUltimoMovimento < 1600;
+        boolean movimentoRecente = horasDesdeUltimoMovimento < 100;
 
 
         return new AnaliseDeMovimento(processo.getNumeroProcesso(),processo.getTribunal(),
