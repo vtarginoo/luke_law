@@ -45,12 +45,24 @@ public class PjeController {
         System.out.println("Received numProcesso: " + request.getNumProcesso());
 
         var requestProcesso = webScrapingService.scrapePjeUltimoMov(request.getNumProcesso());
+
+        System.out.println("Web scraping concluído.");
+
+        System.out.println("Iniciando a análise da movimentação...");
         var analiseProcesso = movimentoService.analisarMovimentacao(requestProcesso);
+
+        System.out.println("Análise da movimentação concluída.");
+
 
         if (analiseProcesso.isMovimentoRecente()) {
 
+            System.out.println("Movimento recente detectado.");
+
             return ResponseEntity.ok(new AnaliseResponse(analiseProcesso, true));
         }
+
+        System.out.println("Nenhum movimento recente detectado.");
+
         return ResponseEntity.ok(new AnaliseResponse(analiseProcesso, false));
     }
 

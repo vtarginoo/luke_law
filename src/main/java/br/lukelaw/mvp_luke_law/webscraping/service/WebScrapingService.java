@@ -32,10 +32,17 @@ public class WebScrapingService {
 
         try {
 
+            System.out.println("Iniciando scraping do PJE para o processo: " + numProcesso);
+
             //última movimentação como string
             String movimentoScrape = webScrapingUtil.ScrapingUltimaMov(driver, pjeUrl, numProcesso);
+
+            System.out.println("Movimentação capturada: " + movimentoScrape);
+
             // Transforma a string capturada em um objeto Movimento
             ultimoMovimento = movimentoService.criarMovimento(movimentoScrape);
+
+            System.out.println("Movimento criado: " + ultimoMovimento);
             // Insere o último movimento na lista
             movimentos.add(ultimoMovimento);
 
