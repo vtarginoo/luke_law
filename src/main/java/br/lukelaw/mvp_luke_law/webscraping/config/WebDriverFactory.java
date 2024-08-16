@@ -56,6 +56,7 @@ public class WebDriverFactory {
             } else {
                 throw new RuntimeException("ChromeDriver não encontrado no caminho: " + chromeDriverPath);
             }
+        }
 
         WebDriver driver = new ChromeDriver(options);
 
@@ -64,3 +65,4 @@ public class WebDriverFactory {
         return driver;
     }
 
+}
