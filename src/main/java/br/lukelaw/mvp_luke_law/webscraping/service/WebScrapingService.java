@@ -25,10 +25,13 @@ public class WebScrapingService {
     public Processo scrapePjeUltimoMov(String numProcesso) {
         WebDriver driver = WebDriverFactory.createChromeDriver();
         String pjeUrl = "https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam";
-
         Processo processoCapturado = null;
         Movimento ultimoMovimento = null;
         List<Movimento> movimentos = new ArrayList<>();
+
+        System.out.println("Variáveis Configuradas");
+
+
 
         try {
 

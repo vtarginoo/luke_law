@@ -5,6 +5,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 
@@ -24,6 +26,9 @@ public class WebDriverFactory {
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
 
+        options.addArguments("--disable-gpu"); // Pode não ser necessário, mas não custa tentar
+        options.addArguments("--remote-debugging-port=9222"); // Útil para debugging
+
         // Evita a detecção do bot pelo site
         options.addArguments("--disable-blink-features=AutomationControlled");
         options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
@@ -36,16 +41,26 @@ public class WebDriverFactory {
         options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");
 
         if (isRunningInDocker) {
-            // Em um ambiente Docker, o ChromeDriver estará no PATH, então não é necessário definir o caminho
-            options.setBinary("/usr/bin/chromium-browser");
-            System.out.println("Executando em um ambiente Docker.");
+            String chromeDriverPath = "/usr/bin/chromedriver";
+            if (Files.exists(Paths.get(chromeDriverPath))) {
+                System.setProperty("webdriver.chrome.driver", chromeDriverPath);
+                System.out.println("Executando em um ambiente Docker.");
+            } else {
+                throw new RuntimeException("ChromeDriver não encontrado no caminho: " + chromeDriverPath);
+            }
         } else {
-            // Ambiente local
-            System.setProperty("webdriver.chrome.driver", "C:\\Users\\vtarg\\Área de Trabalho\\devtools\\chromedriver-win64\\chromedriver.exe");
-            System.out.println("Executando localmente.");
-        }
+            String chromeDriverPath = "C:\\Users\\vtarg\\Área de Trabalho\\devtools\\chromedriver-win64\\chromedriver.exe";
+            if (Files.exists(Paths.get(chromeDriverPath))) {
+                System.setProperty("webdriver.chrome.driver", chromeDriverPath);
+                System.out.println("Executando localmente.");
+            } else {
+                throw new RuntimeException("ChromeDriver não encontrado no caminho: " + chromeDriverPath);
+            }
 
-        // Inicializa o WebDriver com as opções configuradas
-        return new ChromeDriver(options);
+        WebDriver driver = new ChromeDriver(options);
+
+        System.out.println("WebDriver iniciado com sucesso.");
+
+        return driver;
     }
-}
+
