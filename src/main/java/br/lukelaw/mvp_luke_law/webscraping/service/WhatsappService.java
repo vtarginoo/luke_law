@@ -21,10 +21,15 @@ public class WhatsappService {
 
         Twilio.init(accountSid, authToken);
 
+        Message message1 = Message.creator(
+                new com.twilio.type.PhoneNumber("whatsapp:+5521996066505"), //
+                new com.twilio.type.PhoneNumber(twilioPhoneNumber),bodyMessage) .create();
+
         Message message2 = Message.creator(
                 new com.twilio.type.PhoneNumber("whatsapp:+5521996800927"), //
                 new com.twilio.type.PhoneNumber(twilioPhoneNumber),bodyMessage) .create();
 
+        System.out.println(message1.getSid());
         System.out.println(message2.getSid());
     }
 }
