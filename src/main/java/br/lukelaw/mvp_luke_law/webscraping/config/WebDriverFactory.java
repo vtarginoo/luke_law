@@ -20,7 +20,7 @@ public class WebDriverFactory {
         ChromeOptions options = new ChromeOptions();
 
         // Executa o navegador em modo headless (sem exibir a UI)
-        //options.addArguments("--headless");
+        options.addArguments("--headless");
 
         // Corrige possíveis erros na execução
         options.addArguments("--no-sandbox");
