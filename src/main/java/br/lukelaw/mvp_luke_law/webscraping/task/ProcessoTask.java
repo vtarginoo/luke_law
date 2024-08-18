@@ -26,7 +26,8 @@ public class ProcessoTask {
     @Autowired
     WhatsappService wppService;
 
-    @Scheduled(cron = "0 0 8-12 * * ?", zone = "America/Sao_Paulo")
+    //@Scheduled(initialDelay = 10000)
+    @Scheduled(cron = "0 30 9 * * ?", zone = "America/Sao_Paulo")
     public void monitoramentoMovimentoDeProcessoWpp() throws JsonProcessingException {
 
         String[] processos = {"0838717-06.2024.8.19.0001", "0809129-51.2024.8.19.0001",
