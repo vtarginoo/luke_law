@@ -65,7 +65,7 @@ public class MovimentoService {
         boolean movimentoRecente = horasDesdeUltimoMovimento < 100;
 
 
-        return new AnaliseDeMovimento(processo.getNumeroProcesso(),processo.getTribunal(),
+        return new AnaliseDeMovimento(processo.getNumeroProcesso(),processo.getTribunal(), processo.getSistema(),
                 ultimoMovimento, horasDesdeUltimoMovimento,movimentoRecente);
     }
 

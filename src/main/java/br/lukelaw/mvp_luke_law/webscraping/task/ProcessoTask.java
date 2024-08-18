@@ -26,7 +26,7 @@ public class ProcessoTask {
     @Autowired
     WhatsappService wppService;
 
-    @Scheduled(cron = "0 30 19-21 * * ?", zone = "America/Sao_Paulo")
+    @Scheduled(cron = "0 0 8-12 * * ?", zone = "America/Sao_Paulo")
     public void monitoramentoMovimentoDeProcessoWpp() throws JsonProcessingException {
 
         String[] processos = {"0838717-06.2024.8.19.0001", "0809129-51.2024.8.19.0001",
@@ -43,10 +43,15 @@ public class ProcessoTask {
 
             var analiseDeMovimento = movimentoService.analisarMovimentacao(requestProcesso);
 
-            String messageBody = "Prezado Cliente, segue as informações sobre a movimentação do processo "
-                    + requestProcesso.getNumeroProcesso() +
-                    "\nData e hora da movimentação: " + analiseDeMovimento.getUltimoMovimento().dataHora() +
-                    "Tipo de Movimentação " + analiseDeMovimento.getUltimoMovimento().nome();
+            String messageBody = "*⚠️ Alerta de Movimentação no Processo*"
+                    + "\n\n*Processo:* " + requestProcesso.getNumeroProcesso()
+                    + "\n*Tribunal:* " + requestProcesso.getTribunal()
+                    + "\n*Sistema:* " + requestProcesso.getSistema()
+                    + "\n\n*Última Movimentação:*"
+                    + "\n*Tipo:* " + analiseDeMovimento.getUltimoMovimento().nome()
+                    + "\n*Data e Hora:* " + analiseDeMovimento.getUltimoMovimento().dataHora()
+                    + "\n*Horas desde a Última Movimentação:* " + analiseDeMovimento.getHorasDesdeUltimoMovimento() + " horas"
+                    + "\n\nPor favor, verifique os detalhes no sistema.";
 
             if (analiseDeMovimento.isMovimentoRecente()) {
                 wppService.notificacaoWhatsapp(messageBody);

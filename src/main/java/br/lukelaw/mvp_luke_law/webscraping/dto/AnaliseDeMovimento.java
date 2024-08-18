@@ -13,6 +13,7 @@ public class AnaliseDeMovimento {
 
     private String numeroProcesso;
     private String tribunal;
+    private String sistema;
     private Movimento ultimoMovimento;
     private long horasDesdeUltimoMovimento;
     private boolean movimentoRecente;
