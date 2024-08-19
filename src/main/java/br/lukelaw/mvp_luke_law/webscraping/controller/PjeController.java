@@ -29,16 +29,22 @@ public class PjeController {
     @Autowired
     private WhatsappService wppService;
 
-    @GetMapping("/{numProcesso}")
-    public Processo consultarUltimaMovimentacao(
-            @PathVariable @Valid
-            @NotBlank(message = "O número do processo é obrigatório")
-            String numProcesso) {
 
-        return webScrapingService.scrapePjeUltimoMov(numProcesso);
+    // Recebe um processo, Faz a Analise dele e Devolve o Ultimo Movimento
+    @PostMapping("/consultaPassiva")
+    public ResponseEntity<Processo> rotaConsultaPassiva
+    (@Valid @NotNull @RequestBody AnaliseRequest request) throws JsonProcessingException {
+
+        System.out.println("Received numProcesso: " + request.getNumProcesso());
+        var requestProcesso = webScrapingService.scrapePjeUltimoMov(request.getNumProcesso());
+        System.out.println("Web scraping concluído.");
+
+        return ResponseEntity.ok(requestProcesso);
     }
 
-    @PostMapping("/consultaAnalise")
+
+    // Recebe um processo, Faz a Analise dele e Devolve o Ultimo Movimento
+    @PostMapping("/consultaAnalisePassiva")
     public ResponseEntity<AnaliseResponse> rotaAnalisePassiva
             (@Valid @NotNull @RequestBody AnaliseRequest request) throws JsonProcessingException {
 
@@ -66,27 +72,15 @@ public class PjeController {
         return ResponseEntity.ok(new AnaliseResponse(analiseProcesso, false));
     }
 
-    @PostMapping("/AnaliseWpp")
-    public ResponseEntity<AnaliseResponse> rotaAnaliseWppPassiva
-            (@Valid @NotNull @RequestBody AnaliseRequest wppRequest) throws JsonProcessingException {
 
-        var requestProcesso = webScrapingService.scrapePjeUltimoMov(wppRequest.getNumProcesso());
-        var analiseProcesso = movimentoService.analisarMovimentacao(requestProcesso);
 
-        String messageBody = "Prezado Cliente, segue as informações sobre a movimentação do processo "
-                + requestProcesso.getNumeroProcesso() +
-                "\nData e hora da movimentação: " + analiseProcesso.getUltimoMovimento().dataHora() +
-                "Tipo de Movimentação " + analiseProcesso.getUltimoMovimento().nome();
 
-        if (analiseProcesso.isMovimentoRecente()) {
-            wppService.notificacaoWhatsapp(messageBody);
 
-            return ResponseEntity.ok(new AnaliseResponse(analiseProcesso, true));
-        }
 
-        return ResponseEntity.ok(new AnaliseResponse(analiseProcesso, false));
 
-    }
+
+
+
 
 }
 

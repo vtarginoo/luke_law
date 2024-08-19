@@ -1,7 +1,5 @@
-package br.lukelaw.mvp_luke_law.webscraping.exception;
+package br.lukelaw.mvp_luke_law.Legado.exception;
 
-import br.lukelaw.mvp_luke_law.Legado.exception.ProcessoNaoEncontradoException;
-import br.lukelaw.mvp_luke_law.Legado.exception.ResponseError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,13 +13,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    //// Tratamento de Erro 400
+   //// Tratamento de Erro 400
     @ExceptionHandler({MethodArgumentNotValidException.class, HandlerMethodValidationException.class})
-    public ResponseEntity<List<br.lukelaw.mvp_luke_law.Legado.exception.ResponseError>> handleValidationErrors400(Exception ex) {
-        List<br.lukelaw.mvp_luke_law.Legado.exception.ResponseError> errors = new ArrayList<>();
+    public ResponseEntity<List<ResponseError>> handleValidationErrors400(Exception ex) {
+        List<ResponseError> errors = new ArrayList<>();
 
         if (ex instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException validationException = (MethodArgumentNotValidException) ex;
@@ -29,11 +28,11 @@ public class GlobalExceptionHandler {
             for (FieldError fieldError : validationException.getFieldErrors()) {
                 String fieldName = fieldError.getField();
                 String errorMessage = fieldError.getDefaultMessage();
-                errors.add(new br.lukelaw.mvp_luke_law.Legado.exception.ResponseError(errorMessage, HttpStatus.BAD_REQUEST, LocalDateTime.now()));
+                errors.add(new ResponseError(errorMessage, HttpStatus.BAD_REQUEST, LocalDateTime.now()));
             }
         } else if (ex instanceof HandlerMethodValidationException) {
 
-            errors.add(new br.lukelaw.mvp_luke_law.Legado.exception.ResponseError("Validation failed", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
+            errors.add(new ResponseError("Validation failed", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
         }
 
         return ResponseEntity.badRequest().body(errors);
@@ -41,10 +40,10 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(ProcessoNaoEncontradoException.class)
-    public ResponseEntity<List<br.lukelaw.mvp_luke_law.Legado.exception.ResponseError>> handleProcessoNaoEncontrado404(ProcessoNaoEncontradoException ex) {
+    public ResponseEntity<List<ResponseError>> handleProcessoNaoEncontrado404(ProcessoNaoEncontradoException ex) {
         String message = "Processo Não Encontrado";
-        List<br.lukelaw.mvp_luke_law.Legado.exception.ResponseError> errors = Collections.singletonList(
-                new br.lukelaw.mvp_luke_law.Legado.exception.ResponseError(message, HttpStatus.NOT_FOUND, LocalDateTime.now())
+        List<ResponseError> errors = Collections.singletonList(
+                new ResponseError(message, HttpStatus.NOT_FOUND, LocalDateTime.now())
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
     }
@@ -52,9 +51,9 @@ public class GlobalExceptionHandler {
 
     // Erro 500 Genérico
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<br.lukelaw.mvp_luke_law.Legado.exception.ResponseError> tratamentoExceptionGenerico(Exception ex) {
+    public ResponseEntity<ResponseError> tratamentoExceptionGenerico(Exception ex) {
 
-        br.lukelaw.mvp_luke_law.Legado.exception.ResponseError response = new ResponseError(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR,
+        ResponseError response = new ResponseError(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR,
                 LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -71,4 +70,3 @@ public class GlobalExceptionHandler {
 
 
 }
-
