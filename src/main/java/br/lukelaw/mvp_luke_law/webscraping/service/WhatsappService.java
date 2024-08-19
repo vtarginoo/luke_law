@@ -1,9 +1,17 @@
 package br.lukelaw.mvp_luke_law.webscraping.service;
 
+import br.lukelaw.mvp_luke_law.webscraping.entity.Movimento;
+import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Service
 public class WhatsappService {
@@ -16,6 +24,9 @@ public class WhatsappService {
 
     @Value("${twilio.whatsapp.from}")
     private String twilioPhoneNumber;
+
+    @Autowired
+    MovimentoService movimentoService;
 
     public void notificacaoWhatsapp (String bodyMessage){
 
@@ -40,6 +51,37 @@ public class WhatsappService {
 
 
     }
-}
+
+
+    public void envioDeConsultaPassiva(Processo requestProcesso) throws JsonProcessingException {
+
+        Movimento movimentoProcesso =requestProcesso.getMovimentos().get(0);
+
+        LocalDateTime dataUltimoMovimento = movimentoProcesso.dataHora();
+
+        // Obter a data e hora atual
+        LocalDateTime agora = LocalDateTime.now();
+
+        // Calcular a diferença em horas
+        long horasDesdeUltimoMovimento = ChronoUnit.HOURS.between(dataUltimoMovimento, agora);
+
+        String messageBody =
+                "*ℹ️ Segue a última movimentação de seu processo:*\n\n" +
+                        "📄 *Processo:* " + requestProcesso.getNumeroProcesso() + "\n" +
+                        "🏛️ *Tribunal:* " + requestProcesso.getTribunal() + "\n" +
+                        "🖥️ *Sistema:* " + requestProcesso.getSistema() + "\n\n" +
+                        "*Última Movimentação:*\n" +
+                        "🔍 *Tipo:* " + movimentoProcesso.nome() + "\n" +
+                        "🕒 *Data e Hora:* " + movimentoProcesso.dataHora() + "\n" +
+                        "⏳ *Horas desde a Última Movimentação:* " + horasDesdeUltimoMovimento + " horas\n\n" +
+                        "⚖️ Por favor, verifique os detalhes no sistema.";
+
+                notificacaoWhatsapp(messageBody);
+            }
+        }
+
+
+
+
 
 

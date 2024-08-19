@@ -15,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @RestController
 @RequestMapping("/pje")
 @Tag(name = "PjeController", description = "Endpoints para consulta e análise de processos via PJE")
@@ -29,24 +32,38 @@ public class PjeController {
     @Autowired
     private WhatsappService wppService;
 
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    // Recebe um processo, Faz a Analise dele e Devolve o Ultimo Movimento
+
+    // Recebe um processo, Faz a Análise dele e Devolve o Último Movimento
     @PostMapping("/consultaPassiva")
-    public ResponseEntity<Processo> rotaConsultaPassiva
-    (@Valid @NotNull @RequestBody AnaliseRequest request) throws JsonProcessingException {
+    public ResponseEntity<String> rotaConsultaPassiva(@Valid @NotNull @RequestBody AnaliseRequest request) throws JsonProcessingException {
 
         System.out.println("Received numProcesso: " + request.getNumProcesso());
+
+        // Executa o web scraping de forma síncrona
         var requestProcesso = webScrapingService.scrapePjeUltimoMov(request.getNumProcesso());
         System.out.println("Web scraping concluído.");
 
-        return ResponseEntity.ok(requestProcesso);
+        // Envia a consulta passiva em um thread separado
+        executorService.submit(() -> {
+            try {
+                wppService.envioDeConsultaPassiva(requestProcesso);
+                System.out.println("Envio de Processo Realizado.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        // Retorna 202 Accepted imediatamente
+        return ResponseEntity.accepted().body("Requisição aceita. Informações serão enviadas via WhatsApp.");
     }
 
 
     // Recebe um processo, Faz a Analise dele e Devolve o Ultimo Movimento
     @PostMapping("/consultaAnalisePassiva")
     public ResponseEntity<AnaliseResponse> rotaAnalisePassiva
-            (@Valid @NotNull @RequestBody AnaliseRequest request) throws JsonProcessingException {
+    (@Valid @NotNull @RequestBody AnaliseRequest request) throws JsonProcessingException {
 
         System.out.println("Received numProcesso: " + request.getNumProcesso());
 
@@ -72,17 +89,9 @@ public class PjeController {
         return ResponseEntity.ok(new AnaliseResponse(analiseProcesso, false));
     }
 
-
-
-
-
-
-
-
-
-
-
 }
+
+
 
 
 

@@ -1,4 +1,4 @@
-package br.lukelaw.mvp_luke_law.Legado.config;
+package br.lukelaw.mvp_luke_law.Legado.canais;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

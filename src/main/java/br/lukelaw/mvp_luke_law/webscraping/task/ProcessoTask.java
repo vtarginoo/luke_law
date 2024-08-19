@@ -44,15 +44,16 @@ public class ProcessoTask {
 
             var analiseDeMovimento = movimentoService.analisarMovimentacao(requestProcesso);
 
-            String messageBody = "*⚠️ Alerta de Movimentação no Processo*"
-                    + "\n\n*Processo:* " + requestProcesso.getNumeroProcesso()
-                    + "\n*Tribunal:* " + requestProcesso.getTribunal()
-                    + "\n*Sistema:* " + requestProcesso.getSistema()
-                    + "\n\n*Última Movimentação:*"
-                    + "\n*Tipo:* " + analiseDeMovimento.getUltimoMovimento().nome()
-                    + "\n*Data e Hora:* " + analiseDeMovimento.getUltimoMovimento().dataHora()
-                    + "\n*Horas desde a Última Movimentação:* " + analiseDeMovimento.getHorasDesdeUltimoMovimento() + " horas"
-                    + "\n\nPor favor, verifique os detalhes no sistema.";
+            String messageBody =
+                    "*⚠️ Alerta de Movimentação no Processo*\n\n" +
+                            "📄 *Processo:* " + requestProcesso.getNumeroProcesso() + "\n" +
+                            "🏛️ *Tribunal:* " + requestProcesso.getTribunal() + "\n" +
+                            "🖥️ *Sistema:* " + requestProcesso.getSistema() + "\n\n" +
+                            "*Última Movimentação:*\n" +
+                            "🔍 *Tipo:* " + analiseDeMovimento.getUltimoMovimento().nome() + "\n" +
+                            "🕒 *Data e Hora:* " + analiseDeMovimento.getUltimoMovimento().dataHora() + "\n" +
+                            "⏳ *Horas desde a Última Movimentação:* " + analiseDeMovimento.getHorasDesdeUltimoMovimento() + " horas\n\n" +
+                            "⚖️ Por favor, verifique os detalhes no sistema.";
 
             if (analiseDeMovimento.isMovimentoRecente()) {
                 wppService.notificacaoWhatsapp(messageBody);
