@@ -40,14 +40,14 @@ public class PjeController {
     public ResponseEntity<String> rotaConsultaPassiva(@Valid @NotNull @RequestBody AnaliseRequest request) throws JsonProcessingException {
 
         System.out.println("Received numProcesso: " + request.getNumProcesso());
-
-        // Executa o web scraping de forma síncrona
-        var requestProcesso = webScrapingService.scrapePjeUltimoMov(request.getNumProcesso());
-        System.out.println("Web scraping concluído.");
+        System.out.println("Iniciando o WebScraping.");
 
         // Envia a consulta passiva em um thread separado
         executorService.submit(() -> {
             try {
+                // Executa o web scraping de forma síncrona
+                var requestProcesso = webScrapingService.scrapePjeUltimoMov(request.getNumProcesso());
+                System.out.println("Web scraping concluído.");
                 wppService.envioDeConsultaPassiva(requestProcesso);
                 System.out.println("Envio de Processo Realizado.");
             } catch (Exception e) {
