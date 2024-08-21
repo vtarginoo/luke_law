@@ -1,27 +1,28 @@
-package br.lukelaw.mvp_luke_law.webscraping.controller;
+package br.lukelaw.mvp_luke_law.messaging.controller;
 
-import br.lukelaw.mvp_luke_law.webscraping.dto.AnaliseRequest;
-import br.lukelaw.mvp_luke_law.webscraping.dto.AnaliseResponse;
-import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
+import br.lukelaw.mvp_luke_law.messaging.service.WhatsappService;
+import br.lukelaw.mvp_luke_law.messaging.dto.AnaliseRequest;
+import br.lukelaw.mvp_luke_law.messaging.dto.AnaliseResponse;
 import br.lukelaw.mvp_luke_law.webscraping.service.MovimentoService;
 import br.lukelaw.mvp_luke_law.webscraping.service.WebScrapingService;
-import br.lukelaw.mvp_luke_law.webscraping.service.WhatsappService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @RestController
-@RequestMapping("/pje")
-@Tag(name = "PjeController", description = "Endpoints para consulta e análise de processos via PJE")
-public class PjeController {
+@RequestMapping("/messaging")
+@Tag(name = "MessagingController", description = "Endpoints para consulta e análise de processos via web scraping do PJE")
+public class MessagingController {
 
     @Autowired
     private WebScrapingService webScrapingService;
@@ -35,7 +36,7 @@ public class PjeController {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 
-    // Recebe um processo, Faz a Análise dele e Devolve o Último Movimento
+    // Recebe um NumProcesso e Envia um Whatsapp
     @PostMapping("/consultaPassiva")
     public ResponseEntity<String> rotaConsultaPassiva(@Valid @NotNull @RequestBody AnaliseRequest request) throws JsonProcessingException {
 
@@ -90,8 +91,4 @@ public class PjeController {
     }
 
 }
-
-
-
-
 

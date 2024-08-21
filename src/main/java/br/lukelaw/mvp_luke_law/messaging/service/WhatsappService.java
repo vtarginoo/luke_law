@@ -1,13 +1,13 @@
-package br.lukelaw.mvp_luke_law.webscraping.service;
+package br.lukelaw.mvp_luke_law.messaging.service;
 
 import br.lukelaw.mvp_luke_law.webscraping.entity.Movimento;
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
+import br.lukelaw.mvp_luke_law.webscraping.service.MovimentoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,27 +28,20 @@ public class WhatsappService {
     @Autowired
     MovimentoService movimentoService;
 
-    public void notificacaoWhatsapp (String bodyMessage){
+    //"whatsapp:+5521996066505"
+
+    public void notificacaoWhatsapp (String advWpp, String bodyMessage){
 
         Twilio.init(accountSid, authToken);
 
         Message message1 = Message.creator(
-                new com.twilio.type.PhoneNumber("whatsapp:+5521996066505"),
-                new com.twilio.type.PhoneNumber(twilioPhoneNumber),bodyMessage).create();
-
-        Message message2 = Message.creator(
-                new com.twilio.type.PhoneNumber("whatsapp:+5521996800927"),
+                new com.twilio.type.PhoneNumber("whatsapp:" + advWpp),
                 new com.twilio.type.PhoneNumber(twilioPhoneNumber),bodyMessage).create();
 
         System.out.println(message1.getSid());
-        System.out.println(message2.getSid());
 
         Message fetchedMessage = Message.fetcher(message1.getSid()).fetch();
         System.out.println("Fetched Message Status: " + fetchedMessage.getStatus());
-
-        Message fetchedMessage2 = Message.fetcher(message2.getSid()).fetch();
-        System.out.println("Fetched Message Status: " + fetchedMessage2.getStatus());
-
 
     }
 
@@ -80,7 +73,8 @@ public class WhatsappService {
                         "⏳ *Horas desde a Última Movimentação:* " + horasDesdeUltimoMovimento + " horas\n\n" +
                         "⚖️ Por favor, verifique os detalhes no sistema.";
 
-        notificacaoWhatsapp(messageBody);
+        String advWpp = "+552199680027";
+        notificacaoWhatsapp(advWpp,messageBody);
     }
         }
 

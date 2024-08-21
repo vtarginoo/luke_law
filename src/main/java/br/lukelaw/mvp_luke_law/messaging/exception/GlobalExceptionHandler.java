@@ -1,5 +1,6 @@
-package br.lukelaw.mvp_luke_law.Legado.exception;
+package br.lukelaw.mvp_luke_law.messaging.exception;
 
+import br.lukelaw.mvp_luke_law.Legado.exception.ProcessoNaoEncontradoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -13,11 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-   //// Tratamento de Erro 400
+    //// Tratamento de Erro 400
     @ExceptionHandler({MethodArgumentNotValidException.class, HandlerMethodValidationException.class})
     public ResponseEntity<List<ResponseError>> handleValidationErrors400(Exception ex) {
         List<ResponseError> errors = new ArrayList<>();
@@ -70,3 +70,4 @@ public class GlobalExceptionHandler {
 
 
 }
+

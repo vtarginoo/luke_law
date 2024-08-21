@@ -1,7 +1,7 @@
 package br.lukelaw.mvp_luke_law.webscraping.service;
 
 
-import br.lukelaw.mvp_luke_law.webscraping.dto.AnaliseDeMovimento;
+import br.lukelaw.mvp_luke_law.messaging.dto.AnaliseDeMovimento;
 import br.lukelaw.mvp_luke_law.webscraping.entity.Movimento;
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package br.lukelaw.mvp_luke_law.webscraping.dto;
+package br.lukelaw.mvp_luke_law.messaging.dto;
 
 import br.lukelaw.mvp_luke_law.webscraping.validator.ProcessNumberValidator;
 import br.lukelaw.mvp_luke_law.webscraping.validator.ValidProcessNumber;
