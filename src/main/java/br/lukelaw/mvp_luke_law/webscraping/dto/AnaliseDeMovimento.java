@@ -2,6 +2,7 @@ package br.lukelaw.mvp_luke_law.webscraping.dto;
 
 
 import br.lukelaw.mvp_luke_law.webscraping.entity.Movimento;
+import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -11,10 +12,7 @@ import lombok.ToString;
 @ToString
 public class AnaliseDeMovimento {
 
-    private String numeroProcesso;
-    private String tribunal;
-    private String sistema;
-    private Movimento ultimoMovimento;
+    private Processo processo;
     private long horasDesdeUltimoMovimento;
     private boolean movimentoRecente;
 

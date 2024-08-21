@@ -65,8 +65,12 @@ public class WhatsappService {
         // Calcular a diferença em horas
         long horasDesdeUltimoMovimento = ChronoUnit.HOURS.between(dataUltimoMovimento, agora);
 
+        // Partes Envolvidas
+        String partesEnvolvidas = requestProcesso.getPartesEnvolvidas();
+
         String messageBody =
                 "*ℹ️ Segue a última movimentação de seu processo:*\n\n" +
+                        "👥 *Partes:* " + partesEnvolvidas + "\n" +
                         "📄 *Processo:* " + requestProcesso.getNumeroProcesso() + "\n" +
                         "🏛️ *Tribunal:* " + requestProcesso.getTribunal() + "\n" +
                         "🖥️ *Sistema:* " + requestProcesso.getSistema() + "\n\n" +
@@ -76,8 +80,8 @@ public class WhatsappService {
                         "⏳ *Horas desde a Última Movimentação:* " + horasDesdeUltimoMovimento + " horas\n\n" +
                         "⚖️ Por favor, verifique os detalhes no sistema.";
 
-                notificacaoWhatsapp(messageBody);
-            }
+        notificacaoWhatsapp(messageBody);
+    }
         }
 
 

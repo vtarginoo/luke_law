@@ -19,9 +19,6 @@ public class WebScrapingService {
     @Autowired
     MovimentoService movimentoService;
 
-    @Autowired
-    WebScrapingUtil webScrapingUtil;
-
     public Processo scrapePjeUltimoMov(String numProcesso) {
         WebDriver driver = WebDriverFactory.createChromeDriver();
         String pjeUrl = "https://tjrj.pje.jus.br/1g/ConsultaPublica/listView.seam";
@@ -37,20 +34,23 @@ public class WebScrapingService {
 
             System.out.println("Iniciando scraping do PJE para o processo: " + numProcesso);
 
-            //última movimentação como string
-            String movimentoScrape = webScrapingUtil.ScrapingUltimaMov(driver, pjeUrl, numProcesso);
+            //Informação Scraped -- Ultima Movimentação e Partes Envolvidas
+            List<String> infoScraped = WebScrapingUtil.ScrapingUltimaMov(driver, pjeUrl, numProcesso);
+            String partesEnvolvidas = infoScraped.get(0);
+            String ultimaMovimentacao = infoScraped.get(1);
 
-            System.out.println("Movimentação capturada: " + movimentoScrape);
+            System.out.println("Partes capturadas: " + partesEnvolvidas);
+            System.out.println("Movimentação capturada: " + ultimaMovimentacao);
 
             // Transforma a string capturada em um objeto Movimento
-            ultimoMovimento = movimentoService.criarMovimento(movimentoScrape);
+            ultimoMovimento = movimentoService.criarMovimento(ultimaMovimentacao);
 
             System.out.println("Movimento criado: " + ultimoMovimento);
             // Insere o último movimento na lista
             movimentos.add(ultimoMovimento);
 
             // Transforma movimento em um processo
-            processoCapturado = new Processo(numProcesso, "TJRJ", "Pje", "1ªInstancia",
+            processoCapturado = new Processo(partesEnvolvidas ,numProcesso, "TJRJ", "Pje", "1ªInstancia",
                     movimentos, ultimoMovimento.dataHora());
 
 

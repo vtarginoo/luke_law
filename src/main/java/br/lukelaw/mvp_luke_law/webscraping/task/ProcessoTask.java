@@ -1,9 +1,12 @@
 package br.lukelaw.mvp_luke_law.webscraping.task;
 
+import br.lukelaw.mvp_luke_law.webscraping.dto.AnaliseDeMovimento;
+import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
 import br.lukelaw.mvp_luke_law.webscraping.service.MovimentoService;
 import br.lukelaw.mvp_luke_law.webscraping.service.WebScrapingService;
 import br.lukelaw.mvp_luke_law.webscraping.service.WhatsappService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -43,21 +46,31 @@ public class ProcessoTask {
             }
 
             var analiseDeMovimento = movimentoService.analisarMovimentacao(requestProcesso);
+            String messageBody = getMessageBody(analiseDeMovimento, requestProcesso); /// ==Corpo==
 
-            String messageBody =
-                    "*⚠️ Alerta de Movimentação no Processo*\n\n" +
-                            "📄 *Processo:* " + requestProcesso.getNumeroProcesso() + "\n" +
-                            "🏛️ *Tribunal:* " + requestProcesso.getTribunal() + "\n" +
-                            "🖥️ *Sistema:* " + requestProcesso.getSistema() + "\n\n" +
-                            "*Última Movimentação:*\n" +
-                            "🔍 *Tipo:* " + analiseDeMovimento.getUltimoMovimento().nome() + "\n" +
-                            "🕒 *Data e Hora:* " + analiseDeMovimento.getUltimoMovimento().dataHora() + "\n" +
-                            "⏳ *Horas desde a Última Movimentação:* " + analiseDeMovimento.getHorasDesdeUltimoMovimento() + " horas\n\n" +
-                            "⚖️ Por favor, verifique os detalhes no sistema.";
 
             if (analiseDeMovimento.isMovimentoRecente()) {
                 wppService.notificacaoWhatsapp(messageBody);
             }
         }
+    }
+
+    private static @NotNull String getMessageBody(AnaliseDeMovimento analiseDeMovimento, Processo requestProcesso) {
+        var ultimoMovimento = analiseDeMovimento.getProcesso().getMovimentos().get(0);
+
+
+        String messageBody =
+                "*⚠️ Alerta de Movimentação no Processo*\n\n" +
+                        "👥 *Partes:* " + requestProcesso.getPartesEnvolvidas() + "\n" +  // Incluindo as partes envolvidas
+                        "📄 *Processo:* " + requestProcesso.getNumeroProcesso() + "\n" +
+                        "🏛️ *Tribunal:* " + requestProcesso.getTribunal() + "\n" +
+                        "🖥️ *Sistema:* " + requestProcesso.getSistema() + "\n\n" +
+                        "*Última Movimentação:*\n" +
+                        "🔍 *Tipo:* " + ultimoMovimento.nome() + "\n" +
+                        "🕒 *Data e Hora:* " + ultimoMovimento.dataHora() + "\n" +
+                        "⏳ *Horas desde a Última Movimentação:* " + analiseDeMovimento.getHorasDesdeUltimoMovimento() + " horas\n\n" +
+                        "⚖️ Por favor, verifique os detalhes no sistema.";
+
+        return messageBody;
     }
 }

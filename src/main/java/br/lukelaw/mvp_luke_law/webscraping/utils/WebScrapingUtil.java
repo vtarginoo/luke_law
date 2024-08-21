@@ -6,12 +6,14 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class WebScrapingUtil {
 
     //Scraping Inicial para pegar a última movimentação
-    public static String ScrapingUltimaMov(WebDriver driver,String url,  String numProcesso)
+    public static List<String> ScrapingUltimaMov(WebDriver driver, String url, String numProcesso)
             throws InterruptedException {
 
         // Acessa a página do PJE Consulta Pública do TJ-RJ
@@ -61,13 +63,37 @@ public class WebScrapingUtil {
             Thread.sleep(2000);
         }
 
+        // =============== Scraping =======================
+
         // Espera explícita para garantir que o elemento esteja presente antes de acessá-lo
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement movimentacaoElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//tbody[@id='fPP:processosTable:tb']/tr[1]/td[3]")));
 
         // Captura a última movimentação
-        return movimentacaoElement.getText();
+        String ultimaMovimentacao = movimentacaoElement.getText();
+        System.out.println("Última movimentação capturada: " + ultimaMovimentacao);
+
+        // Captura o conteúdo do <td> que contém as partes e o número do processo
+        WebElement partesElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//tbody[@id='fPP:processosTable:tb']/tr[1]/td[2]")));
+
+        // Obtém o texto dentro da âncora <a> (que você deseja remover depois)
+        String textoDentroDaAncora = partesElement.findElement(By.tagName("a")).getText();
+        // Obtém o texto total do <td>
+        String textoCompleto = partesElement.getText();
+        // Remove o texto dentro da âncora para obter apenas as partes envolvidas
+        String partesEnvolvidas = textoCompleto.replace(textoDentroDaAncora, "").trim();
+        partesEnvolvidas = partesEnvolvidas.substring(textoCompleto.indexOf("\n") + 2).trim();
+
+        System.out.println("Partes envolvidas capturadas: " + partesEnvolvidas);
+
+        // Cria uma lista para armazenar as informações capturadas
+        List<String> resultado = new ArrayList<>();
+        resultado.add(partesEnvolvidas);
+        resultado.add(ultimaMovimentacao);
+
+        return resultado;
     }
 }
 

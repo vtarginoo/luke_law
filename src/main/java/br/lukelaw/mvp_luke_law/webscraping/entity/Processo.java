@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class Processo {
+    private String partesEnvolvidas;
     private String numeroProcesso;
     private String tribunal;
     private String sistema;
