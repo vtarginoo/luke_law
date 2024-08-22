@@ -1,4 +1,4 @@
-package br.lukelaw.mvp_luke_law.messaging.exception;
+package br.lukelaw.mvp_luke_law.webscraping.exception;
 
 import org.springframework.http.HttpStatus;
 

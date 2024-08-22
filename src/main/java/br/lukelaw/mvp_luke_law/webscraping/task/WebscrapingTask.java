@@ -2,7 +2,7 @@ package br.lukelaw.mvp_luke_law.webscraping.task;
 
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
 import br.lukelaw.mvp_luke_law.webscraping.service.WebScrapingService;
-import br.lukelaw.mvp_luke_law.webscraping.xSimulateBD.BDSimulate;
+import br.lukelaw.mvp_luke_law.xSimulateBD.BDSimulate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +27,9 @@ public class WebscrapingTask {
     @Autowired
     private BDSimulate bdSimulate;
 
-    //@Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
-    @Scheduled(initialDelay = 60000)
+
+    //@Scheduled(initialDelay = 120000)
+    @Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
     public void scrapingPJE() {
         for (String processo : bdSimulate.processosAssociados.keySet()) {
             try {

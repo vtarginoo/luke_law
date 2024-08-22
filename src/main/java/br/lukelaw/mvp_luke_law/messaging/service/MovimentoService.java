@@ -1,4 +1,4 @@
-package br.lukelaw.mvp_luke_law.webscraping.service;
+package br.lukelaw.mvp_luke_law.messaging.service;
 
 
 import br.lukelaw.mvp_luke_law.messaging.dto.AnaliseDeMovimento;
