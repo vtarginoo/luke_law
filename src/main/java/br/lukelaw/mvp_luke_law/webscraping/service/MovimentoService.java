@@ -62,12 +62,36 @@ public class MovimentoService {
         long horasDesdeUltimoMovimento = ChronoUnit.HOURS.between(dataUltimoMovimento, agora);
 
         // Verificar se a diferença é menor que 12 Horas
-        boolean movimentoRecente = horasDesdeUltimoMovimento < 12;
+        //boolean movimentoRecente = horasDesdeUltimoMovimento < 2;
+
+        boolean movimentoRecente = verificarMovimentacaoForaHorario(dataUltimoMovimento,
+                horasDesdeUltimoMovimento, agora);
 
 
         return new AnaliseDeMovimento(processo,horasDesdeUltimoMovimento,movimentoRecente);
     }
 
+    private boolean verificarMovimentacaoForaHorario(LocalDateTime dataUltimoMovimento,
+                                                     long horasDesdeUltimoMovimento,
+                                                     LocalDateTime agora) {
+
+        // Verifica se a movimentação ocorreu entre 19h e 7h
+        boolean foraDoHorarioExpediente = dataUltimoMovimento.getHour() >= 19 || dataUltimoMovimento.getHour() < 7;
+
+        // Verifica se a atual hora está entre 7h e 8h
+        boolean primeiraVerificacaoDoDia = agora.getHour() >= 7 && agora.getHour() < 9;
+
+        // Se a movimentação ocorreu fora do horário de expediente e estamos na primeira verificação do dia
+        if (foraDoHorarioExpediente && primeiraVerificacaoDoDia) {
+            return true;
+        }
+
+        // Verifica se a movimentação ocorreu nas últimas 2 horas
+        boolean movimentacaoRecenteNormal = horasDesdeUltimoMovimento < 2;
+
+        // Durante o horário normal, a movimentação será considerada recente se for dentro de 2 horas
+        return movimentacaoRecenteNormal;
+    }
 
 
 
