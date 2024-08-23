@@ -1,10 +1,9 @@
 name: Build and Push Docker Image
 
-# Define o gatilho para rodar o CI quando houver push na branch 'kafka'
 on:
   push:
     branches:
-      - feature/kafka
+      - main
 
 jobs:
   build_and_push:
