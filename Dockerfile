@@ -67,6 +67,10 @@ ENV CHROME_PATH=/usr/lib/chromium/
 ENV KAFKA_HOME=/opt/kafka
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
+# Copia os arquivos de configuração do Kafka e Log4j
+COPY server.properties /opt/kafka/config/server.properties
+COPY log4j.properties /opt/kafka/config/log4j.properties
+
 # Copia o JAR do estágio de build
 COPY --from=build /app/target/mvp-luke-law-0.0.1-SNAPSHOT.jar app.jar
 

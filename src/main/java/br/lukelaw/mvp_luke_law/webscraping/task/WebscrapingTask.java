@@ -27,26 +27,55 @@ public class WebscrapingTask {
     @Autowired
     private BDSimulate bdSimulate;
 
-///////
+    ///////
     @Scheduled(initialDelay = 120000)
     //@Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
     public void scrapingPJE() {
-        for (String processo : bdSimulate.processosAssociados.keySet()) {
-            try {
-                Processo processoRaspado = webScrapingService.scrapePjeUltimoMov(processo);
+        try {
+            iniciarKafka();
 
-                if (processoRaspado == null) {
-                    log.warn("Falha no scraping para o processo {}", processo);
-                    continue;
+            log.info("Iniciando scraping e envio ao Kafka...");
+            for (String processo : bdSimulate.processosAssociados.keySet()) {
+                try {
+                    Processo processoRaspado = webScrapingService.scrapePjeUltimoMov(processo);
+
+                    if (processoRaspado == null) {
+                        log.warn("Falha no scraping para o processo {}", processo);
+                        continue;
+                    }
+
+                    kafkaTemplate.send("processos", processoRaspado);
+                    log.info("Processo {} publicado no tópico Kafka", processoRaspado.getNumeroProcesso());
+
+                } catch (Exception e) {
+                    log.error("Erro ao realizar o scraping do processo {}", processo, e);
                 }
-
-                // Publica o processo raspado no Kafka
-                kafkaTemplate.send("processos", processoRaspado);
-                log.info("Processo {} publicado no tópico Kafka", processoRaspado.getNumeroProcesso());
-
-            } catch (Exception e) {
-                log.error("Erro ao realizar o scraping do processo {}", processo, e);
             }
+
+            log.info("Finalizando scraping e envio ao Kafka.");
+        } catch (Exception e) {
+            log.error("Erro ao realizar o scraping ou enviar ao Kafka", e);
+        } finally {
+            pararKafka();
+        }
+    }
+
+    private void iniciarKafka() {
+        try {
+            log.info("Iniciando Kafka...");
+            Runtime.getRuntime().exec("cmd /c start-kafka.bat");
+            Thread.sleep(10000); // Aguardar Kafka iniciar
+        } catch (Exception e) {
+            log.error("Erro ao iniciar o Kafka", e);
+        }
+    }
+
+    private void pararKafka() {
+        try {
+            log.info("Parando Kafka...");
+            Runtime.getRuntime().exec("cmd /c stop-kafka.bat");
+        } catch (Exception e) {
+            log.error("Erro ao parar o Kafka", e);
         }
     }
 }
