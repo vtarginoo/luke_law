@@ -1,24 +1,32 @@
 name: Build and Push Docker Image
 
+# Define o gatilho para rodar o CI quando houver push na branch 'kafka'
 on:
   push:
-    branches: [main]
+    branches:
+      - kafka
 
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
+    steps:
+      # Checkout do código do repositório
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Configura o Docker Buildx para criar imagens multiplataforma
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      # Login no Docker Hub
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: vtarginoo
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      # Construir e pushar a imagem Docker para o Docker Hub
       - name: Build and Push Image
         run: |
           docker buildx build . \
@@ -30,8 +38,7 @@ jobs:
             --build-arg TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }} \
             --build-arg TWILIO_WHATSAPP_FROM=${{ secrets.TWILIO_WHATSAPP_FROM }} \
             -f Dockerfile \
-            -t vtarginoo/lukelawapi:latest
+            -t vtarginoo/lukelawapi:kafka
 
-            
 
 
