@@ -72,8 +72,10 @@ COPY --from=build /app/target/mvp-luke-law-0.0.1-SNAPSHOT.jar app.jar
 
 # Porta da aplicação
 EXPOSE 8080
-EXPOSE 9092  # Kafka
-EXPOSE 2181  # Zookeeper
+# Kafka
+EXPOSE 9092
+# Zookeeper
+EXPOSE 2181
 
 # Script para iniciar Kafka, Zookeeper e a aplicação
 COPY start-kafka.sh /usr/bin/start-kafka.sh
