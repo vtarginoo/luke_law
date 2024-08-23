@@ -1,4 +1,4 @@
-package br.lukelaw.mvp_luke_law.webscraping.dto;
+package br.lukelaw.mvp_luke_law.messaging.dto;
 
 import br.lukelaw.mvp_luke_law.webscraping.validator.ProcessNumberValidator;
 import br.lukelaw.mvp_luke_law.webscraping.validator.ValidProcessNumber;
@@ -11,11 +11,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class AnaliseRequest {
+public class ConsultaPassivaRequest {
 
     @NotBlank(message = "O número do processo é obrigatório")
     @ValidProcessNumber
     private String numProcesso;
+
+    @NotBlank(message = "O número de celular é obrigatório")
+    private String celular;
 
     public String getNumProcesso() {
         return formatarNumeroProcesso(this.numProcesso);

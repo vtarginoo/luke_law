@@ -1,8 +1,10 @@
 package br.lukelaw.mvp_luke_law.webscraping.service;
 
+import br.lukelaw.mvp_luke_law.messaging.service.MovimentoService;
 import br.lukelaw.mvp_luke_law.webscraping.config.WebDriverFactory;
 import br.lukelaw.mvp_luke_law.webscraping.entity.Movimento;
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
+import br.lukelaw.mvp_luke_law.webscraping.exception.WebScrapingException;
 import br.lukelaw.mvp_luke_law.webscraping.utils.WebScrapingUtil;
 import org.openqa.selenium.*;
 
@@ -27,8 +29,6 @@ public class WebScrapingService {
         List<Movimento> movimentos = new ArrayList<>();
 
         System.out.println("Variáveis Configuradas");
-
-
 
         try {
 
@@ -55,7 +55,9 @@ public class WebScrapingService {
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new WebScrapingException("Aconteceu um Erro no WebScrapping!");
+
+
         } finally {
             driver.quit();
         }

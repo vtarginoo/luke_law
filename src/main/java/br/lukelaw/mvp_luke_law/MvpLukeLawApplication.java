@@ -8,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 
 //http://localhost:8080/swagger-ui/index.html
-@SpringBootApplication(scanBasePackages = "br.lukelaw.mvp_luke_law.webscraping")
+@SpringBootApplication
 @OpenAPIDefinition(
 		info = @Info(
 				title = "MVP Luke Law API",
