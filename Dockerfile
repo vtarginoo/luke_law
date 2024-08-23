@@ -71,6 +71,11 @@ ENV PATH=${PATH}:${KAFKA_HOME}/bin
 COPY server.properties /opt/kafka/config/server.properties
 COPY log4j.properties /opt/kafka/config/log4j.properties
 
+# Copia os scripts de controle do Kafka
+COPY start-kafka.sh /usr/bin/start-kafka.sh
+COPY stop-kafka.sh /usr/bin/stop-kafka.sh
+RUN chmod +x /usr/bin/start-kafka.sh /usr/bin/stop-kafka.sh
+
 # Copia o JAR do estágio de build
 COPY --from=build /app/target/mvp-luke-law-0.0.1-SNAPSHOT.jar app.jar
 
@@ -81,9 +86,5 @@ EXPOSE 9092
 # Zookeeper
 EXPOSE 2181
 
-# Script para iniciar Kafka, Zookeeper e a aplicação
-COPY start-kafka.sh /usr/bin/start-kafka.sh
-RUN chmod +x /usr/bin/start-kafka.sh
-
-# Executa o aplicativo junto com Kafka e Zookeeper
-ENTRYPOINT ["start-kafka.sh"]
+# Executa a aplicação Java diretamente
+ENTRYPOINT ["java", "-jar", "app.jar"]

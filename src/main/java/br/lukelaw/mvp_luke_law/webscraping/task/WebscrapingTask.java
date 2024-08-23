@@ -6,6 +6,7 @@ import br.lukelaw.mvp_luke_law.xSimulateBD.BDSimulate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,7 +28,7 @@ public class WebscrapingTask {
     @Autowired
     private BDSimulate bdSimulate;
 
-    ///////
+
     @Scheduled(initialDelay = 120000)
     //@Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
     public void scrapingPJE() {
@@ -60,10 +61,20 @@ public class WebscrapingTask {
         }
     }
 
+    private String getKafkaCommand(String command) {
+        String os = System.getProperty("os.name").toLowerCase();
+        System.out.println(os);
+        if (os.contains("win")) {
+            return "cmd /c " + command + ".bat";
+        } else {
+            return "/usr/bin/" + command + ".sh";
+        }
+    }
+
     private void iniciarKafka() {
         try {
             log.info("Iniciando Kafka...");
-            Runtime.getRuntime().exec("cmd /c start-kafka.bat");
+            Runtime.getRuntime().exec(getKafkaCommand("start-kafka"));
             Thread.sleep(10000); // Aguardar Kafka iniciar
         } catch (Exception e) {
             log.error("Erro ao iniciar o Kafka", e);
@@ -73,10 +84,9 @@ public class WebscrapingTask {
     private void pararKafka() {
         try {
             log.info("Parando Kafka...");
-            Runtime.getRuntime().exec("cmd /c stop-kafka.bat");
+            Runtime.getRuntime().exec(getKafkaCommand("stop-kafka"));
         } catch (Exception e) {
             log.error("Erro ao parar o Kafka", e);
         }
     }
 }
-
