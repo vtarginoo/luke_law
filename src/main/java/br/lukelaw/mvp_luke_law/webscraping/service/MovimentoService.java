@@ -73,7 +73,7 @@ public class MovimentoService {
         }
 
         // Lógica padrão para movimentação dentro do horário de expediente
-        boolean movimentoRecente = horasDesdeUltimoMovimento < 8;
+        boolean movimentoRecente = horasDesdeUltimoMovimento < 2;
 
         return new AnaliseDeMovimento(processo, horasDesdeUltimoMovimento, movimentoRecente);
 
