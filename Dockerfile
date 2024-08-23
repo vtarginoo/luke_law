@@ -1,5 +1,5 @@
 # Estágio de Build
-FROM maven:3.9.3-eclipse-temurin-17 AS build  # Nomeando a fase de build como 'build'
+FROM maven:3.9.3-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Copia o wrapper do Maven e o arquivo de configuração
