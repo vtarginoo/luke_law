@@ -24,9 +24,6 @@ public class BDSimulate {
         usuarios.add(new User(3, "Saul Goodman", "whatsapp:+5521996800927"));
         usuarios.add(new User(4, "Erick.", "whatsapp:+5521996066505"));
 
-
-
-
         // Mockando algumas associações de processos aos IDs dos usuários
         processosAssociados.put("0838717-06.2024.8.19.0001", List.of(1, 2));
         processosAssociados.put("0809129-51.2024.8.19.0001", List.of(3, 4));
