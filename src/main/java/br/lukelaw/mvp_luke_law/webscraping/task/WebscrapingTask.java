@@ -27,7 +27,7 @@ public class WebscrapingTask {
     @Autowired
     private BDSimulate bdSimulate;
 
-
+///////
     @Scheduled(initialDelay = 120000)
     //@Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
     public void scrapingPJE() {
