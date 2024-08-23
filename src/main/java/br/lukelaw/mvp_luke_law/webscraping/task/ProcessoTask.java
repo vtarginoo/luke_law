@@ -34,7 +34,7 @@ public class ProcessoTask {
     public void monitoramentoMovimentoDeProcessoWpp() throws JsonProcessingException {
 
         String[] processos = {"0838717-06.2024.8.19.0001", "0809129-51.2024.8.19.0001",
-                "0947617-20.2023.8.19.0001", "0938160-61.2023.8.19.0001"};
+                "0947617-20.2023.8.19.0001", "0938160-61.2023.8.19.0001","0907787-47.2023.8.19.0001"};
 
         for (String processo : processos) {
 
@@ -47,7 +47,6 @@ public class ProcessoTask {
 
             var analiseDeMovimento = movimentoService.analisarMovimentacao(requestProcesso);
             String messageBody = getMessageBody(analiseDeMovimento, requestProcesso); /// ==Corpo==
-
 
             if (analiseDeMovimento.isMovimentoRecente()) {
                 wppService.notificacaoWhatsapp(messageBody);
