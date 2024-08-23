@@ -28,8 +28,8 @@ public class WebscrapingTask {
     private BDSimulate bdSimulate;
 
 
-    //@Scheduled(initialDelay = 120000)
-    @Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
+    @Scheduled(initialDelay = 120000)
+    //@Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
     public void scrapingPJE() {
         for (String processo : bdSimulate.processosAssociados.keySet()) {
             try {

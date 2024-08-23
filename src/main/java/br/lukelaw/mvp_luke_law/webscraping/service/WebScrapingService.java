@@ -30,8 +30,6 @@ public class WebScrapingService {
 
         System.out.println("Variáveis Configuradas");
 
-
-
         try {
 
             System.out.println("Iniciando scraping do PJE para o processo: " + numProcesso);
