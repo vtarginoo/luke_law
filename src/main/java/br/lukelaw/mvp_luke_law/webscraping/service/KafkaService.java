@@ -16,11 +16,11 @@ public class KafkaService {
     private static final Logger log = LoggerFactory.getLogger(KafkaService.class);
 
 
-
     public boolean iniciarKafka() {
         try {
             log.info("Iniciando Kafka...");
-            Runtime.getRuntime().exec(getKafkaCommand("start-kafka"));
+            String startCommand = getKafkaCommand("start-kafka");
+            Runtime.getRuntime().exec(startCommand);
             Thread.sleep(10000); // Aguardar Kafka iniciar
 
             // Verificação básica se o Kafka está escutando na porta padrão (9092)
@@ -58,23 +58,28 @@ public class KafkaService {
         return true; // Retorna verdadeiro se tudo ocorreu bem
     }
 
-
-
     public void pararKafka() {
         try {
             log.info("Parando Kafka...");
-            Runtime.getRuntime().exec(getKafkaCommand("stop-kafka"));
+            String stopCommand = getKafkaCommand("stop-kafka");
+            Runtime.getRuntime().exec(stopCommand);
         } catch (Exception e) {
             log.error("Erro ao parar o Kafka", e);
         }
     }
 
     private String getKafkaCommand(String command) {
+        String kafkaHome = System.getenv("KAFKA_HOME");
+        if (kafkaHome == null || kafkaHome.isEmpty()) {
+            log.error("A variável de ambiente KAFKA_HOME não está definida.");
+            return command;
+        }
+
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
-            return "cmd /c " + command + ".bat";
+            return "cmd /c " + kafkaHome + "\\" + command + ".bat";
         } else {
-            return "/usr/bin/" + command + ".sh";
+            return kafkaHome + "/bin/" + command + ".sh";
         }
     }
 }
