@@ -1,9 +1,8 @@
 package br.lukelaw.mvp_luke_law.webscraping.service;
 
-import org.apache.kafka.clients.admin.ListTopicsResult;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -77,7 +76,7 @@ public class KafkaService {
 
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("win")) {
-            return "cmd /c " + kafkaHome + "\\" + command + ".bat";
+            return "cmd /c " + kafkaHome + "\\bin\\" + command + ".bat";
         } else {
             return kafkaHome + "/bin/" + command + ".sh";
         }
