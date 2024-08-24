@@ -18,7 +18,7 @@ public class KafkaService {
     public boolean iniciarKafka() {
         try {
             log.info("Iniciando Kafka...");
-            String startCommand = getKafkaCommand("start-kafka");
+            String startCommand = "/opt/kafka/bin/start-kafka.sh";
             Runtime.getRuntime().exec(startCommand);
             Thread.sleep(10000); // Aguardar Kafka iniciar
 
@@ -60,7 +60,7 @@ public class KafkaService {
     public void pararKafka() {
         try {
             log.info("Parando Kafka...");
-            String stopCommand = getKafkaCommand("stop-kafka");
+            String stopCommand = "/opt/kafka/bin/stop-kafka.sh";
             Runtime.getRuntime().exec(stopCommand);
         } catch (Exception e) {
             log.error("Erro ao parar o Kafka", e);
@@ -78,7 +78,7 @@ public class KafkaService {
         if (os.contains("win")) {
             return "cmd /c " + kafkaHome + "\\bin\\" + command + ".bat";
         } else {
-            return kafkaHome + "/bin/" + command + ".sh";
+            return "/opt/kafka/bin/start-kafka.sh";
         }
     }
 }
