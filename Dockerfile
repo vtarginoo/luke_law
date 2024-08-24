@@ -67,9 +67,9 @@ ENV CHROME_PATH=/usr/lib/chromium/
 ENV KAFKA_HOME=/opt/kafka
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
 
-# Copia os arquivos de configuração do Kafka e Log4j
-COPY server.properties /opt/kafka/config/server.properties
-COPY log4j.properties /opt/kafka/config/log4j.properties
+# Copia os arquivos de configuração do Kafka e Log4j do diretório resources
+COPY src/main/resources/server.properties /opt/kafka/config/server.properties
+COPY src/main/resources/log4j.properties /opt/kafka/config/log4j.properties
 
 # Copia os scripts de controle do Kafka
 COPY start-kafka.sh /usr/bin/start-kafka.sh
