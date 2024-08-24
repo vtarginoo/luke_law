@@ -1,6 +1,7 @@
 package br.lukelaw.mvp_luke_law.webscraping.task;
 
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
+import br.lukelaw.mvp_luke_law.webscraping.service.KafkaService;
 import br.lukelaw.mvp_luke_law.webscraping.service.WebScrapingService;
 import br.lukelaw.mvp_luke_law.xSimulateBD.BDSimulate;
 import org.slf4j.Logger;
@@ -28,12 +29,15 @@ public class WebscrapingTask {
     @Autowired
     private BDSimulate bdSimulate;
 
+    @Autowired
+    private KafkaService kafkaService;
 
-    @Scheduled(initialDelay = 120000)
+
+    @Scheduled(fixedRate = 120000)
     //@Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
     public void scrapingPJE() {
         try {
-            iniciarKafka();
+            kafkaService.iniciarKafka();
 
             log.info("Iniciando scraping e envio ao Kafka...");
             for (String processo : bdSimulate.processosAssociados.keySet()) {
@@ -56,37 +60,19 @@ public class WebscrapingTask {
             log.info("Finalizando scraping e envio ao Kafka.");
         } catch (Exception e) {
             log.error("Erro ao realizar o scraping ou enviar ao Kafka", e);
-        } finally {
-            pararKafka();
         }
     }
 
-    private String getKafkaCommand(String command) {
-        String os = System.getProperty("os.name").toLowerCase();
-        System.out.println(os);
-        if (os.contains("win")) {
-            return "cmd /c " + command + ".bat";
-        } else {
-            return "/usr/bin/" + command + ".sh";
-        }
+    // Agendado para desligar o Kafka em um horário específico
+    @Scheduled(cron = "0 05 8-19 * * ?", zone = "America/Sao_Paulo")
+    //@Scheduled(fixedRate = 240000)
+    public void stopKafka() {
+        kafkaService.pararKafka();
     }
 
-    private void iniciarKafka() {
-        try {
-            log.info("Iniciando Kafka...");
-            Runtime.getRuntime().exec(getKafkaCommand("start-kafka"));
-            Thread.sleep(10000); // Aguardar Kafka iniciar
-        } catch (Exception e) {
-            log.error("Erro ao iniciar o Kafka", e);
-        }
-    }
 
-    private void pararKafka() {
-        try {
-            log.info("Parando Kafka...");
-            Runtime.getRuntime().exec(getKafkaCommand("stop-kafka"));
-        } catch (Exception e) {
-            log.error("Erro ao parar o Kafka", e);
-        }
-    }
+
+
+
+
 }
