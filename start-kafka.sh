@@ -16,6 +16,4 @@ if [ $? -ne 0 ]; then
   echo "Erro ao iniciar o Kafka"
   exit 1
 fi
-sleep 10  # Aguarda 10 segundos para garantir que o Kafka tenha iniciado
-
-echo "Kafka e Zookeeper foram iniciados."
+sleep 20  # Aguarda 20 segundos para garantir que o Kafka tenha iniciado

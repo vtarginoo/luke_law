@@ -17,8 +17,8 @@ public class KafkaService {
     private static final String START_KAFKA_SCRIPT = "/app/start-kafka.sh";
     private static final String STOP_KAFKA_SCRIPT = "/app/stop-kafka.sh";
     private static final int KAFKA_PORT = 9092;
-    private static final int MAX_RETRIES = 5;
-    private static final int RETRY_DELAY_MS = 5000;
+    private static final int MAX_RETRIES = 1;
+    private static final int RETRY_DELAY_MS = 10000;
 
     public boolean iniciarKafka() {
         try {
