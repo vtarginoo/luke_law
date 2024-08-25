@@ -71,11 +71,10 @@ ENV PATH=${PATH}:${KAFKA_HOME}/bin
 COPY src/main/resources/server.properties /opt/kafka/config/server.properties
 COPY src/main/resources/log4j.properties /opt/kafka/config/log4j.properties
 
-
 # Copia os scripts de controle do Kafka do diretório raiz do projeto
-COPY start-kafka.sh /opt/kafka/bin/start-kafka.sh
-COPY stop-kafka.sh /opt/kafka/bin/stop-kafka.sh
-RUN chmod +x /opt/kafka/bin/start-kafka.sh /opt/kafka/bin/stop-kafka.sh
+COPY start-kafka.sh /app/start-kafka.sh
+COPY stop-kafka.sh /app/stop-kafka.sh
+RUN chmod +x /app/start-kafka.sh /app/stop-kafka.sh
 
 # Copia o JAR do estágio de build
 COPY --from=build /app/target/mvp-luke-law-0.0.1-SNAPSHOT.jar app.jar

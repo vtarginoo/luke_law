@@ -14,71 +14,70 @@ public class KafkaService {
 
     private static final Logger log = LoggerFactory.getLogger(KafkaService.class);
 
+    private static final String START_KAFKA_SCRIPT = "/app/start-kafka.sh";
+    private static final String STOP_KAFKA_SCRIPT = "/app/stop-kafka.sh";
+    private static final int KAFKA_PORT = 9092;
+    private static final int MAX_RETRIES = 5;
+    private static final int RETRY_DELAY_MS = 5000;
 
     public boolean iniciarKafka() {
         try {
             log.info("Iniciando Kafka...");
-            String startCommand = "/opt/kafka/bin/start-kafka.sh";
-            Runtime.getRuntime().exec(startCommand);
-            Thread.sleep(10000); // Aguardar Kafka iniciar
 
-            // Verificação básica se o Kafka está escutando na porta padrão (9092)
-            boolean isKafkaReady = false;
-            int maxRetries = 5;
-            int retryCount = 0;
+            // Executa o script de inicialização do Kafka
+            Process startProcess = Runtime.getRuntime().exec(START_KAFKA_SCRIPT);
+            startProcess.waitFor();  // Aguarda o script finalizar
+            log.info("Script de inicialização do Kafka executado.");
 
-            while (!isKafkaReady && retryCount < maxRetries) {
-                try (Socket socket = new Socket()) {
-                    socket.connect(new InetSocketAddress("localhost", 9092), 2000);
-                    isKafkaReady = true;
-                    log.info("Kafka está pronto e escutando na porta 9092.");
-                } catch (IOException e) {
-                    log.warn("Kafka ainda não está pronto, aguardando...");
-                    retryCount++;
-                    try {
-                        Thread.sleep(5000); // Aguarda 5 segundos antes de tentar novamente
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                        log.error("Thread interrompida", ie);
-                    }
-                }
-            }
+            // Aguardar alguns segundos para o Kafka iniciar
+            Thread.sleep(15000);
 
-            if (!isKafkaReady) {
+            // Verificação se o Kafka está escutando na porta padrão (9092)
+            if (isKafkaReady()) {
+                log.info("Kafka está pronto e escutando na porta " + KAFKA_PORT + ".");
+                return true;
+            } else {
                 log.error("Kafka não está pronto após várias tentativas, abortando...");
-                return false; // Retorna falso para indicar que o Kafka não está pronto
+                return false;
             }
 
         } catch (Exception e) {
             log.error("Erro ao iniciar o Kafka", e);
             return false;
         }
-
-        return true; // Retorna verdadeiro se tudo ocorreu bem
     }
 
     public void pararKafka() {
         try {
             log.info("Parando Kafka...");
-            String stopCommand = "/opt/kafka/bin/stop-kafka.sh";
-            Runtime.getRuntime().exec(stopCommand);
+
+            // Executa o script de parada do Kafka
+            Process stopProcess = Runtime.getRuntime().exec(STOP_KAFKA_SCRIPT);
+            stopProcess.waitFor();  // Aguarda o script finalizar
+            log.info("Kafka foi parado com sucesso.");
+
         } catch (Exception e) {
             log.error("Erro ao parar o Kafka", e);
         }
     }
 
-    private String getKafkaCommand(String command) {
-        String kafkaHome = System.getenv("KAFKA_HOME");
-        if (kafkaHome == null || kafkaHome.isEmpty()) {
-            log.error("A variável de ambiente KAFKA_HOME não está definida.");
-            return command;
+    private boolean isKafkaReady() {
+        int retryCount = 0;
+        while (retryCount < MAX_RETRIES) {
+            try (Socket socket = new Socket()) {
+                socket.connect(new InetSocketAddress("localhost", KAFKA_PORT), 2000);
+                return true;  // Kafka está pronto
+            } catch (IOException e) {
+                log.warn("Kafka ainda não está pronto, aguardando...");
+                retryCount++;
+                try {
+                    Thread.sleep(RETRY_DELAY_MS);  // Aguarda alguns segundos antes de tentar novamente
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    log.error("Thread interrompida", ie);
+                }
+            }
         }
-
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win")) {
-            return "cmd /c " + kafkaHome + "\\bin\\" + command + ".bat";
-        } else {
-            return "/opt/kafka/bin/start-kafka.sh";
-        }
+        return false;  // Kafka não está pronto após várias tentativas
     }
 }
