@@ -17,8 +17,8 @@ public class KafkaService {
     private static final String START_KAFKA_SCRIPT = "/app/start-kafka.sh";
     private static final String STOP_KAFKA_SCRIPT = "/app/stop-kafka.sh";
     private static final int KAFKA_PORT = 9092;
-    private static final int MAX_RETRIES = 1;
-    private static final int RETRY_DELAY_MS = 10000;
+    private static final int MAX_RETRIES = 3;  // Aumentado para 3 tentativas
+    private static final int RETRY_DELAY_MS = 15000;  // Aumentado para 15 segundos
 
     public boolean iniciarKafka() {
         try {
@@ -30,7 +30,7 @@ public class KafkaService {
             log.info("Script de inicialização do Kafka executado.");
 
             // Aguardar alguns segundos para o Kafka iniciar
-            Thread.sleep(15000);
+            Thread.sleep(30000);
 
             // Verificação se o Kafka está escutando na porta padrão (9092)
             if (isKafkaReady()) {
