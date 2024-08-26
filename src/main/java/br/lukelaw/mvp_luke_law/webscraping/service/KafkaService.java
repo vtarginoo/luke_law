@@ -17,8 +17,6 @@ public class KafkaService {
     private static final String START_KAFKA_SCRIPT = "/app/start-kafka.sh";
     private static final String STOP_KAFKA_SCRIPT = "/app/stop-kafka.sh";
     private static final int KAFKA_PORT = 9092;
-    private static final int MAX_RETRIES = 3;  // Aumentado para 3 tentativas
-    private static final int RETRY_DELAY_MS = 15000;  // Aumentado para 15 segundos
 
     public boolean iniciarKafka() {
         try {
@@ -26,18 +24,22 @@ public class KafkaService {
 
             // Executa o script de inicialização do Kafka
             Process startProcess = Runtime.getRuntime().exec(START_KAFKA_SCRIPT);
-            startProcess.waitFor();  // Aguarda o script finalizar
-            log.info("Script de inicialização do Kafka executado.");
+            int exitCode = startProcess.waitFor();
+
+            if (exitCode != 0) {
+                log.error("Falha ao executar o script de inicialização do Kafka. Código de saída: " + exitCode);
+                return false;
+            }
 
             // Aguardar alguns segundos para o Kafka iniciar
-            Thread.sleep(30000);
+            Thread.sleep(10000);  // Espera 10 segundos para o Kafka iniciar
 
-            // Verificação se o Kafka está escutando na porta padrão (9092)
+            // Verifica se o Kafka está escutando na porta padrão (9092)
             if (isKafkaReady()) {
                 log.info("Kafka está pronto e escutando na porta " + KAFKA_PORT + ".");
                 return true;
             } else {
-                log.error("Kafka não está pronto após várias tentativas, abortando...");
+                log.error("Kafka não está pronto, abortando...");
                 return false;
             }
 
@@ -53,8 +55,13 @@ public class KafkaService {
 
             // Executa o script de parada do Kafka
             Process stopProcess = Runtime.getRuntime().exec(STOP_KAFKA_SCRIPT);
-            stopProcess.waitFor();  // Aguarda o script finalizar
-            log.info("Kafka foi parado com sucesso.");
+            int exitCode = stopProcess.waitFor();
+
+            if (exitCode == 0) {
+                log.info("Kafka foi parado com sucesso.");
+            } else {
+                log.error("Falha ao parar o Kafka. Código de saída: " + exitCode);
+            }
 
         } catch (Exception e) {
             log.error("Erro ao parar o Kafka", e);
@@ -62,22 +69,12 @@ public class KafkaService {
     }
 
     private boolean isKafkaReady() {
-        int retryCount = 0;
-        while (retryCount < MAX_RETRIES) {
-            try (Socket socket = new Socket()) {
-                socket.connect(new InetSocketAddress("localhost", KAFKA_PORT), 2000);
-                return true;  // Kafka está pronto
-            } catch (IOException e) {
-                log.warn("Kafka ainda não está pronto, aguardando...");
-                retryCount++;
-                try {
-                    Thread.sleep(RETRY_DELAY_MS);  // Aguarda alguns segundos antes de tentar novamente
-                } catch (InterruptedException ie) {
-                    Thread.currentThread().interrupt();
-                    log.error("Thread interrompida", ie);
-                }
-            }
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress("localhost", KAFKA_PORT), 2000);
+            return true;  // Kafka está pronto
+        } catch (IOException e) {
+            log.warn("Kafka não está escutando na porta " + KAFKA_PORT);
+            return false;
         }
-        return false;  // Kafka não está pronto após várias tentativas
     }
 }
