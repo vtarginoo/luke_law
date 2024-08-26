@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   zookeeper:
-    image: wurstmeister/zookeeper:3.8
+    image: bitnami/zookeeper:latest
     container_name: zookeeper
     ports:
       - "2181:2181"
@@ -9,7 +9,7 @@ services:
       - kafka-net
 
   kafka:
-    image: wurstmeister/kafka:latest
+    image: bitnami/kafka:latest
     container_name: kafka
     ports:
       - "9092:9092"
