@@ -33,10 +33,10 @@ public class WebscrapingTask {
     private KafkaService kafkaService;
 
 
-    //@Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRate = 120000)
     //@Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
     //@Scheduled(cron = "0 5/10 * * * ?", zone = "America/Sao_Paulo")
-    @Scheduled(cron = "0 0/10 * * * ?", zone = "America/Sao_Paulo")
+    //@Scheduled(cron = "0 0/10 * * * ?", zone = "America/Sao_Paulo")
     public void scrapingPJE() {
         try {
             if (!kafkaService.iniciarKafka()) {
@@ -69,10 +69,10 @@ public class WebscrapingTask {
     }
 
     // Agendado para desligar o Kafka em um horário específico
+    @Scheduled(fixedRate = 240000)
     //@Scheduled(cron = "0 05 8-19 * * ?", zone = "America/Sao_Paulo")
-    //@Scheduled(fixedRate = 240000)
     //@Scheduled(cron = "0 0/10 * * * ?", zone = "America/Sao_Paulo")
-    @Scheduled(cron = "0 5/10 * * * ?", zone = "America/Sao_Paulo")
+    //@Scheduled(cron = "0 5/10 * * * ?", zone = "America/Sao_Paulo")
     public void stopKafka() {
         kafkaService.pararKafka();
     }
