@@ -1,13 +1,11 @@
 package br.lukelaw.mvp_luke_law.webscraping.task;
 
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
-import br.lukelaw.mvp_luke_law.webscraping.service.KafkaService;
 import br.lukelaw.mvp_luke_law.webscraping.service.WebScrapingService;
 import br.lukelaw.mvp_luke_law.xSimulateBD.BDSimulate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,9 +27,6 @@ public class WebscrapingTask {
     @Autowired
     private BDSimulate bdSimulate;
 
-    @Autowired
-    private KafkaService kafkaService;
-
 
     @Scheduled(fixedRate = 120000)
     //@Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
@@ -39,10 +34,6 @@ public class WebscrapingTask {
     //@Scheduled(cron = "0 0/10 * * * ?", zone = "America/Sao_Paulo")
     public void scrapingPJE() {
         try {
-            if (!kafkaService.iniciarKafka()) {
-                log.error("Kafka não está pronto, abortando scraping.");
-                return;
-            }
 
             log.info("Iniciando scraping e envio ao Kafka...");
             for (String processo : bdSimulate.processosAssociados.keySet()) {
@@ -66,15 +57,6 @@ public class WebscrapingTask {
         } catch (Exception e) {
             log.error("Erro ao realizar o scraping ou enviar ao Kafka", e);
         }
-    }
-
-    // Agendado para desligar o Kafka em um horário específico
-    @Scheduled(fixedRate = 240000)
-    //@Scheduled(cron = "0 05 8-19 * * ?", zone = "America/Sao_Paulo")
-    //@Scheduled(cron = "0 0/10 * * * ?", zone = "America/Sao_Paulo")
-    //@Scheduled(cron = "0 5/10 * * * ?", zone = "America/Sao_Paulo")
-    public void stopKafka() {
-        kafkaService.pararKafka();
     }
 
 }

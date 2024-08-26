@@ -53,38 +53,15 @@ RUN apk add --no-cache \
     bash \
     && rm -rf /var/cache/apk/*
 
-# Instalar Kafka e Zookeeper
-RUN apk add --no-cache curl bash jq docker \
-    && mkdir -p /opt/kafka \
-    && curl -sSL https://dlcdn.apache.org/kafka/3.8.0/kafka_2.13-3.8.0.tgz | tar -xz -C /opt/kafka --strip-components=1 \
-    && apk add openjdk17-jre
-
 # Definir variáveis de ambiente para Chrome e ChromeDriver
 ENV CHROME_BIN=/usr/bin/chromium-browser
 ENV CHROME_PATH=/usr/lib/chromium/
-
-# Definir variáveis de ambiente para Kafka
-ENV KAFKA_HOME=/opt/kafka
-ENV PATH=${PATH}:${KAFKA_HOME}/bin
-
-# Copia os arquivos de configuração do Kafka e Log4j do diretório resources
-COPY src/main/resources/server.properties /opt/kafka/config/server.properties
-COPY src/main/resources/log4j.properties /opt/kafka/config/log4j.properties
-
-# Copia os scripts de controle do Kafka do diretório raiz do projeto
-COPY start-kafka.sh /app/start-kafka.sh
-COPY stop-kafka.sh /app/stop-kafka.sh
-RUN chmod +x /app/start-kafka.sh /app/stop-kafka.sh
 
 # Copia o JAR do estágio de build
 COPY --from=build /app/target/mvp-luke-law-0.0.1-SNAPSHOT.jar app.jar
 
 # Porta da aplicação
 EXPOSE 8080
-# Kafka
-EXPOSE 9092
-# Zookeeper
-EXPOSE 2181
 
 # Executa a aplicação Java diretamente
 ENTRYPOINT ["java", "-jar", "app.jar"]
