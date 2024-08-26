@@ -28,7 +28,7 @@ services:
   app:
     build:
       context: .
-    container_name: vtarginoo/lukelawapi
+    container_name: vtarginoo/lukelawapi:latest
     ports:
       - "8080:8080"
     depends_on:
