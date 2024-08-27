@@ -22,7 +22,11 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true" # Adiciona a criação automática de tópicos
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+        - ./src/main/resources/log4j.properties:/bitnami/kafka/config/log4j.properties
+        - ./src/main/resources/server.properties:/bitnami/kafka/config/server.properties
+
     depends_on:
       - zookeeper
     networks:

@@ -30,8 +30,6 @@ public class WebscrapingTask {
 
     @Scheduled(fixedRate = 120000)
     //@Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
-    //@Scheduled(cron = "0 5/10 * * * ?", zone = "America/Sao_Paulo")
-    //@Scheduled(cron = "0 0/10 * * * ?", zone = "America/Sao_Paulo")
     public void scrapingPJE() {
         try {
 
