@@ -32,7 +32,7 @@ public class ConsultaAtivaService {
     BDSimulate bdSimulate;
 
     @KafkaListener(topics = "processos", groupId = "processo_group", containerFactory = "kafkaListenerContainerFactory")
-    public void monitoramentoMovimentoDeProcessoWpp(Processo requestProcesso) throws JsonProcessingException {
+    public void consumerConsultaAtiva(Processo requestProcesso) throws JsonProcessingException {
 
         log.info("Processo recebido: {}", requestProcesso.getNumeroProcesso());
 
