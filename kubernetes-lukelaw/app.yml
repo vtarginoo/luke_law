@@ -15,6 +15,7 @@ spec:
       containers:
         - name: app
           image: vtarginoo/lukelawapi:kafka
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
 ---
