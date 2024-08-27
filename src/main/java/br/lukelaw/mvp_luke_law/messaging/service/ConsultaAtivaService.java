@@ -39,7 +39,7 @@ public class ConsultaAtivaService {
         var analiseDeMovimento = movimentoService.analisarMovimentacao(requestProcesso);
 
         // Coloque a negação para testar a notificação mesmo quando o movimento não é recente
-        if (!analiseDeMovimento.isMovimentoRecente()) {
+        if (analiseDeMovimento.isMovimentoRecente()) {
             List<Integer> advogadosAssociados = bdSimulate.processosAssociados.get(requestProcesso.getNumeroProcesso());
             if (advogadosAssociados != null) {
                 for (int advId : advogadosAssociados) {

@@ -23,7 +23,9 @@ kind: Service
 metadata:
   name: app
 spec:
+  type: LoadBalancer
   ports:
-    - port: 8080
+    - port: 80       # Porta exposta externamente
+      targetPort: 8080 # Porta interna do container
   selector:
     app: app
