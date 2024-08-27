@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -61,8 +62,8 @@ public class MovimentoService {
         log.info("Data e hora do último movimento: {}", dataUltimoMovimento);
 
         // Obter a data e hora atual
-        LocalDateTime agora = LocalDateTime.now();
-        log.info("Data e hora atual: {}", agora);
+        LocalDateTime agora = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        log.info("Data e hora atual (SP): {}", agora);
 
         // Calcular a diferença em horas
         long horasDesdeUltimoMovimento = ChronoUnit.HOURS.between(dataUltimoMovimento, agora);
