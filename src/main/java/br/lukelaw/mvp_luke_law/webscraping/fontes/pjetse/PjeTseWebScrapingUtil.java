@@ -1,4 +1,4 @@
-package br.lukelaw.mvp_luke_law.webscraping.utils;
+package br.lukelaw.mvp_luke_law.webscraping.fontes.pjetse;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class WebScrapingUtil {
+public class PjeTseWebScrapingUtil {
 
     //Scraping Inicial para pegar a última movimentação
     public static List<String> ScrapingUltimaMov(WebDriver driver, String url, String numProcesso)

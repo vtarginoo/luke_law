@@ -1,7 +1,7 @@
 package br.lukelaw.mvp_luke_law.webscraping.task;
 
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
-import br.lukelaw.mvp_luke_law.webscraping.service.WebScrapingService;
+import br.lukelaw.mvp_luke_law.webscraping.fontes.pje.PjeWebScrapingService;
 import br.lukelaw.mvp_luke_law.xSimulateBD.BDSimulate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class WebscrapingTask {
     private static final Logger log = LoggerFactory.getLogger(WebscrapingTask.class);
 
     @Autowired
-    private WebScrapingService webScrapingService;
+    private PjeWebScrapingService webScrapingService;
 
     @Autowired
     private KafkaTemplate<String, Processo> kafkaTemplate;

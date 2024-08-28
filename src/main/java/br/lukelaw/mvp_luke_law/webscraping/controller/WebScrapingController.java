@@ -4,7 +4,7 @@ package br.lukelaw.mvp_luke_law.webscraping.controller;
 import br.lukelaw.mvp_luke_law.webscraping.dto.WSRequest;
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
 import br.lukelaw.mvp_luke_law.webscraping.exception.ProcessNotFoundException;
-import br.lukelaw.mvp_luke_law.webscraping.service.WebScrapingService;
+import br.lukelaw.mvp_luke_law.webscraping.fontes.pje.PjeWebScrapingService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class WebScrapingController {
 
     @Autowired
-    private WebScrapingService webScrapingService;
+    private PjeWebScrapingService webScrapingService;
 
     @PostMapping("/pje")
     public ResponseEntity<Processo> scrapePje(@Valid @NotNull @RequestBody WSRequest request) {

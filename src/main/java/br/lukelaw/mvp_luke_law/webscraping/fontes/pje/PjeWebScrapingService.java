@@ -1,11 +1,10 @@
-package br.lukelaw.mvp_luke_law.webscraping.service;
+package br.lukelaw.mvp_luke_law.webscraping.fontes.pje;
 
 import br.lukelaw.mvp_luke_law.messaging.service.MovimentoService;
 import br.lukelaw.mvp_luke_law.webscraping.config.WebDriverFactory;
 import br.lukelaw.mvp_luke_law.webscraping.entity.Movimento;
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
 import br.lukelaw.mvp_luke_law.webscraping.exception.WebScrapingException;
-import br.lukelaw.mvp_luke_law.webscraping.utils.WebScrapingUtil;
 import org.openqa.selenium.*;
 
 
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class WebScrapingService {
+public class PjeWebScrapingService {
 
     @Autowired
     MovimentoService movimentoService;
@@ -35,7 +34,7 @@ public class WebScrapingService {
             System.out.println("Iniciando scraping do PJE para o processo: " + numProcesso);
 
             //Informação Scraped -- Ultima Movimentação e Partes Envolvidas
-            List<String> infoScraped = WebScrapingUtil.ScrapingUltimaMov(driver, pjeUrl, numProcesso);
+            List<String> infoScraped = PjeWebScrapingUtil.ScrapingUltimaMov(driver, pjeUrl, numProcesso);
             String partesEnvolvidas = infoScraped.get(0);
             String ultimaMovimentacao = infoScraped.get(1);
 
