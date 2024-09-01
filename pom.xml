@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.lukelaw</groupId>
-	<artifactId>mvp-luke-law</artifactId>
+	<artifactId>luke-law</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>mvp-luke-law</name>
 	<description>MVP de api de consultas ao data jud</description>
