@@ -24,7 +24,7 @@ public class WebScrapingController {
     private PjeWebScrapingService webScrapingService;
 
     @PostMapping("/pje")
-    public ResponseEntity<Processo> scrapePje(@Valid @NotNull @RequestBody WSRequest request) {
+    public Processo scrapePje(@Valid @NotNull @RequestBody WSRequest request) {
         System.out.println("Received numProcesso: " + request.getNumProcesso());
 
         var requestProcesso = webScrapingService.scrapePjeUltimoMov(request.getNumProcesso());
@@ -35,7 +35,7 @@ public class WebScrapingController {
         }
 
         System.out.println("Web scraping concluído e processo encontrado.");
-        return ResponseEntity.ok(requestProcesso);
+        return requestProcesso;
     }
 }
 

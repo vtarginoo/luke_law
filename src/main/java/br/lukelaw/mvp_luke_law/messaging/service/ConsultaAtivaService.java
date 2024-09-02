@@ -7,7 +7,6 @@ import br.lukelaw.mvp_luke_law.xSimulateBD.BDSimulate;
 import br.lukelaw.mvp_luke_law.xSimulateBD.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class ConsultaAtivaService {
     @Autowired
     BDSimulate bdSimulate;
 
-    @KafkaListener(topics = "processos", groupId = "processo_group", containerFactory = "kafkaListenerContainerFactory")
+
     public void consumerConsultaAtiva(Processo requestProcesso) throws JsonProcessingException {
 
         log.info("Processo recebido: {}", requestProcesso.getNumeroProcesso());
@@ -39,7 +38,7 @@ public class ConsultaAtivaService {
         var analiseDeMovimento = movimentoService.analisarMovimentacao(requestProcesso);
 
         // Coloque a negação para testar a notificação mesmo quando o movimento não é recente
-        if (analiseDeMovimento.isMovimentoRecente()) {
+        if (!analiseDeMovimento.isMovimentoRecente()) {
             List<Integer> advogadosAssociados = bdSimulate.processosAssociados.get(requestProcesso.getNumeroProcesso());
             if (advogadosAssociados != null) {
                 for (int advId : advogadosAssociados) {

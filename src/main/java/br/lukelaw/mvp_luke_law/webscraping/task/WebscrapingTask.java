@@ -1,12 +1,12 @@
 package br.lukelaw.mvp_luke_law.webscraping.task;
 
+import br.lukelaw.mvp_luke_law.messaging.service.ConsultaAtivaService;
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
 import br.lukelaw.mvp_luke_law.webscraping.fontes.pje.PjeWebScrapingService;
 import br.lukelaw.mvp_luke_law.xSimulateBD.BDSimulate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,14 +22,14 @@ public class WebscrapingTask {
     private PjeWebScrapingService webScrapingService;
 
     @Autowired
-    private KafkaTemplate<String, Processo> kafkaTemplate;
-
-    @Autowired
     private BDSimulate bdSimulate;
 
+    @Autowired
+    private ConsultaAtivaService consultaAtivaService;
 
-    //@Scheduled(fixedRate = 120000)
-    @Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
+
+    @Scheduled(fixedRate = 1200)
+    //@Scheduled(cron = "0 0 8-19 * * ?", zone = "America/Sao_Paulo")
     public void scrapingPJE() {
         try {
 
@@ -43,15 +43,16 @@ public class WebscrapingTask {
                         continue;
                     }
 
-                    kafkaTemplate.send("processos", processoRaspado);
-                    log.info("Processo {} publicado no tópico Kafka", processoRaspado.getNumeroProcesso());
+                    consultaAtivaService.consumerConsultaAtiva(processoRaspado);
+
+                    log.info("Processo {} Enviado Analise De Consulta", processoRaspado.getNumeroProcesso());
 
                 } catch (Exception e) {
                     log.error("Erro ao realizar o scraping do processo {}", processo, e);
                 }
             }
 
-            log.info("Finalizando scraping e envio ao Kafka.");
+            log.info("Finalizando scraping e Analise.");
         } catch (Exception e) {
             log.error("Erro ao realizar o scraping ou enviar ao Kafka", e);
         }

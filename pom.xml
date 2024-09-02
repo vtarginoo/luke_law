@@ -12,7 +12,7 @@
 	<artifactId>luke-law</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>mvp-luke-law</name>
-	<description>MVP de api de consultas ao data jud</description>
+	<description>MVP de Consultas Ativas e Passivas ao pje</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -78,12 +78,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -101,16 +95,6 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.6.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
 		<dependency>

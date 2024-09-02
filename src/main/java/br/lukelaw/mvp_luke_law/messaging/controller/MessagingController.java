@@ -7,6 +7,8 @@ import br.lukelaw.mvp_luke_law.messaging.service.ConsultaPassivaService;
 import br.lukelaw.mvp_luke_law.messaging.service.WhatsappService;
 import br.lukelaw.mvp_luke_law.messaging.dto.ConsultaPassivaRequest;
 import br.lukelaw.mvp_luke_law.messaging.service.MovimentoService;
+import br.lukelaw.mvp_luke_law.webscraping.controller.WebScrapingController;
+import br.lukelaw.mvp_luke_law.webscraping.dto.WSRequest;
 import br.lukelaw.mvp_luke_law.webscraping.entity.Processo;
 import br.lukelaw.mvp_luke_law.webscraping.exception.ProcessNotFoundException;
 import br.lukelaw.mvp_luke_law.webscraping.exception.ResponseError;
@@ -44,21 +46,13 @@ public class MessagingController {
     private WhatsappService wppService;
 
     @Autowired
-    RestTemplate restTemplate;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Value("${api.webscraping.url}")
-    private String webScrapingApiUrl;
+    private WebScrapingController webScrapingController;
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 
-
-
     @PostMapping("/consultaPassiva")
-    public ResponseEntity<ConsultaPassivaResponse> rotaConsultaPassiva(@Valid @NotNull @RequestBody ConsultaPassivaRequest request) throws JsonProcessingException {
+    public ResponseEntity<ConsultaPassivaResponse> rotaConsultaPassiva(@Valid @NotNull @RequestBody ConsultaPassivaRequest request) {
 
         String numProcesso = request.getNumProcesso();
         String advWpp = request.getCelular().trim();
@@ -68,34 +62,34 @@ public class MessagingController {
         // Log correto indicando o início da requisição ao WebScrapingController
         System.out.println("Iniciando o WebScraping.");
 
-        // Chama o WebScrapingController fazer a Raspagem de Dados
-        ResponseEntity<Processo> response = restTemplate.postForEntity(
-                webScrapingApiUrl, request, Processo.class);
+        // Chama o WebScrapingController diretamente
+        Processo requestProcesso;
+        try {
 
-        if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+            WSRequest wsRequest = new WSRequest(numProcesso);
+
+            requestProcesso = webScrapingController.scrapePje(wsRequest);
+        } catch (ProcessNotFoundException e) {
             throw new ProcessNotFoundException("Processo não encontrado para o número: "
-                    + request.getNumProcesso(),advWpp);
-        } else if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
-            ResponseError errorResponse = objectMapper.convertValue(response.getBody(), ResponseError.class);
-            throw new BadRequestException(errorResponse,advWpp);
-        } else if (response.getStatusCode() != HttpStatus.OK) {
+                    + request.getNumProcesso(), advWpp);
+        } catch (Exception e) {
             throw new WebScrapingException("Erro ao realizar web scraping para o número: "
-                    + request.getNumProcesso(),advWpp);
+                    + request.getNumProcesso(), advWpp);
         }
 
-        Processo requestProcesso = response.getBody();
         System.out.println("Web scraping concluído com sucesso.");
 
         // Envia a consulta passiva em um thread separado
         executorService.submit(() -> {
             try {
-                consultaPassiva.envioDeConsultaPassiva(requestProcesso,advWpp);
+                consultaPassiva.envioDeConsultaPassiva(requestProcesso, advWpp);
                 System.out.println("Envio de Processo Realizado.");
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Envio da Mensagem Falhou");
                 throw new MessageSendFailureException("Falha ao enviar a mensagem via WhatsApp para o processo: " + request.getNumProcesso());
-            }});
+            }
+        });
 
         // Cria o ConsultaPassivaResponse
         ConsultaPassivaResponse consultaResponse = new ConsultaPassivaResponse(requestProcesso,
